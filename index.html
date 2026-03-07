@@ -2,9 +2,31 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JUSTSHRT — Wheel of Fortune</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+<style>
+  /* ── INSTANT fallback fonts while Google Fonts loads ── */
+  @font-face {
+    font-family: 'Bebas Neue';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Impact'), local('Arial Black');
+  }
+  @font-face {
+    font-family: 'Kanit';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Leelawadee UI'), local('Tahoma'), local('Arial');
+  }
+</style>
 <style>
   :root { --bg:#0d1b2a; --surface:#132236; --surface2:#1a2e44; --ink:#e8f4fd; --ink2:#a8c8e8; --muted:#5a88aa; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -92,7 +114,7 @@
 </head>
 <body>
 
-<!-- ══ PAGE: REGISTER ══ -->
+
 <div id="pageRegister" class="page active">
   <div class="register-box">
     <div class="logo-big">JUSTSHRT</div>
@@ -107,7 +129,7 @@
   </div>
 </div>
 
-<!-- ══ PAGE: USER WHEEL ══ -->
+
 <div id="pageUser" class="page">
   <div class="user-wrap">
     <div class="user-header">
@@ -129,7 +151,7 @@
   </div>
 </div>
 
-<!-- ══ PAGE: ADMIN ══ -->
+
 <div id="pageAdmin" class="page">
   <div class="admin-container">
     <div class="admin-header">
@@ -140,7 +162,7 @@
       </div>
     </div>
     <div class="admin-grid">
-      <!-- LEFT -->
+      
       <div>
         <div class="panel" style="margin-bottom:14px;">
           <div class="panel-title">รายชื่อ / รูป <span class="line"></span></div>
@@ -160,7 +182,7 @@
           <div class="palette-row" id="palettePicker"></div>
         </div>
       </div>
-      <!-- CENTER -->
+      
       <div class="admin-center">
         <div class="wheel-section">
           <div class="wheel-wrapper">
@@ -170,12 +192,48 @@
             </div>
           </div>
           <button class="spin-btn" id="adminSpinBtn" onclick="adminSpin()" style="width:min(380px,92vw);">▶ TEST SPIN</button>
+
+          <!-- ── จำกัดสปิน ── -->
+          <div style="width:min(380px,92vw);background:var(--surface);border:1px solid rgba(79,195,247,0.15);border-radius:14px;padding:16px;">
+            <div style="font-family:'Bebas Neue',cursive;font-size:0.95rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+              🎯 จำกัดสปินต่อ User <div style="flex:1;height:1px;background:linear-gradient(to right,rgba(79,195,247,0.3),transparent);"></div>
+            </div>
+            <!-- Toggle unlimited -->
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(79,195,247,0.08);">
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;color:var(--ink);">ไม่จำกัด</div>
+                <div style="font-size:0.72rem;color:var(--muted);">ปิดเพื่อกำหนดจำนวน</div>
+              </div>
+              <label style="position:relative;width:42px;height:22px;cursor:pointer;flex-shrink:0;">
+                <input type="checkbox" id="unlimitedToggle" checked onchange="toggleUnlimited()" style="opacity:0;width:0;height:0;">
+                <span id="toggleSlider" style="position:absolute;inset:0;background:var(--surface2);border:1px solid rgba(79,195,247,0.15);border-radius:22px;transition:all 0.25s;"></span>
+                <span id="toggleDot" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all 0.25s;"></span>
+              </label>
+            </div>
+            <!-- Limit row -->
+            <div id="limitRow" style="display:none;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(79,195,247,0.08);">
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;color:var(--ink);">สปินได้</div>
+                <div style="font-size:0.72rem;color:var(--muted);">ครั้ง / คน</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <button onclick="changeLimit(-1)" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(79,195,247,0.2);background:var(--surface);color:#4fc3f7;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.15s;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">−</button>
+                <div id="limitVal" style="font-family:'Bebas Neue',cursive;font-size:1.6rem;color:#4fc3f7;min-width:32px;text-align:center;letter-spacing:1px;">1</div>
+                <button onclick="changeLimit(1)" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(79,195,247,0.2);background:var(--surface);color:#4fc3f7;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.15s;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">+</button>
+              </div>
+            </div>
+            <!-- Status bar -->
+            <div id="spinLimitStatus" style="display:none;font-size:0.72rem;color:var(--muted);text-align:center;padding:4px 0;">
+              User หมุนได้สูงสุด <span id="limitDisplay" style="color:#4fc3f7;font-weight:700;">1</span> ครั้ง
+            </div>
+          </div>
+
           <button class="btn btn-ink" onclick="publishWheel()" style="width:min(380px,92vw);padding:12px;font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:3px;">💾 บันทึก → อัพเดทวงล้อผู้ใช้</button>
           <div id="saveMsg" style="font-size:0.78rem;color:#4fc3f7;display:none;text-align:center;">✅ บันทึกแล้ว!</div>
           <button class="btn btn-ghost" onclick="goUserPage()" style="width:min(380px,92vw);font-size:0.8rem;">← ดูหน้าผู้ใช้</button>
         </div>
       </div>
-      <!-- RIGHT -->
+      
       <div>
         <div class="panel" style="margin-bottom:14px;">
           <div class="panel-title">📦 คำสั่งรับสินค้า <span class="line"></span></div>
@@ -196,7 +254,7 @@
   </div>
 </div>
 
-<!-- ══ ADMIN LOGIN OVERLAY ══ -->
+
 <div class="admin-login-overlay" id="adminLoginOverlay">
   <div class="login-box">
     <h3>🔐 ADMIN</h3>
@@ -210,7 +268,7 @@
   </div>
 </div>
 
-<!-- ══ WIN MODAL ══ -->
+
 <div class="modal-overlay" id="winModal">
   <div class="modal">
     <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:14px;text-shadow:0 0 16px rgba(79,195,247,0.5);">🎉 ยินดีด้วย! 🎉</div>
@@ -222,7 +280,7 @@
   </div>
 </div>
 
-<!-- ══ CLAIM MODAL ══ -->
+
 <div class="modal-overlay" id="claimModal">
   <div class="modal">
     <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:6px;">📦 ยืนยันรับสินค้า</div>
@@ -238,7 +296,7 @@
   </div>
 </div>
 
-<!-- ══ SUCCESS MODAL ══ -->
+
 <div class="modal-overlay" id="successModal">
   <div class="modal">
     <div style="font-size:3rem;margin-bottom:12px;">✅</div>
@@ -261,6 +319,8 @@ const PALETTES=[
 ];
 
 let names=[],colors=[],images=[],weights=[],imageCache=[];
+let spinLimitEnabled=false, spinLimitMax=1;
+let userSpinCount=0;
 let activePalette=[...PALETTES[0]];
 let currentUser={name:'',phone:''};
 let currentWinner='';
@@ -291,6 +351,7 @@ function registerUser(){
   initUserCanvas();
   loadWheelData();
   drawWheel('user');
+  updateUserSpinStatus();
 }
 document.getElementById('regName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('regPhone').focus();});
 document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')registerUser();});
@@ -329,20 +390,52 @@ function goUserPage(){showPage('pageUser');drawWheel('user');}
 function loadWheelData(){
   try{
     const d=JSON.parse(localStorage.getItem('justshrt_wheel')||'null');
-    if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];preloadImages();}
+    if(d){
+      names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
+      spinLimitEnabled=d.spinLimitEnabled||false;
+      spinLimitMax=d.spinLimitMax||1;
+      preloadImages();
+      // sync toggle UI if admin page visible
+      const tog=document.getElementById('unlimitedToggle');
+      if(tog){ tog.checked=!spinLimitEnabled; updateToggleUI(); }
+      if(document.getElementById('limitVal')) document.getElementById('limitVal').textContent=spinLimitMax;
+      if(document.getElementById('limitDisplay')) document.getElementById('limitDisplay').textContent=spinLimitMax;
+    }
   }catch(e){}
 }
 function publishWheel(){
-  localStorage.setItem('justshrt_wheel',JSON.stringify({names,colors,images,weights}));
+  localStorage.setItem('justshrt_wheel',JSON.stringify({names,colors,images,weights,spinLimitEnabled,spinLimitMax}));
   preloadImages(); drawWheel('user');
+  // reset all user spin counts when admin publishes
+  localStorage.removeItem('justshrt_user_spins');
+  userSpinCount=0;
   const m=document.getElementById('saveMsg'); m.style.display='block';
   setTimeout(()=>m.style.display='none',3000);
 }
 function preloadImages(){
   imageCache=images.map(src=>{if(!src)return null;const img=new Image();img.src=src;return img;});
 }
+// ════ GOOGLE SHEETS CONFIG ════
+// วาง URL จาก Apps Script ตรงนี้เลย:
+const SHEETS_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
 function saveOrder(o){
-  try{const orders=JSON.parse(localStorage.getItem('justshrt_orders')||'[]');orders.push(o);localStorage.setItem('justshrt_orders',JSON.stringify(orders));}catch(e){}
+  // 1. บันทึกลง localStorage (backup)
+  try{
+    const orders=JSON.parse(localStorage.getItem('justshrt_orders')||'[]');
+    orders.push(o);
+    localStorage.setItem('justshrt_orders',JSON.stringify(orders));
+  }catch(e){}
+
+  // 2. ส่งไป Google Sheets (ถ้ามี URL)
+  if(SHEETS_URL && SHEETS_URL !== 'YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SHEETS_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(o)
+    }).catch(()=>{});
+  }
 }
 
 // ── CANVAS INIT ──
@@ -436,7 +529,29 @@ function doSpin(target,onWin){
   })(performance.now());
 }
 
-function userSpin(){doSpin('user',idx=>{document.getElementById('claimBtn').style.display='block';showWin(idx,true);});}
+function userSpin(){
+  // check spin limit
+  if(spinLimitEnabled){
+    // load user's spin count from storage (keyed by phone)
+    const key='justshrt_spins_'+(currentUser.phone||'guest');
+    userSpinCount=parseInt(localStorage.getItem(key)||'0');
+    if(userSpinCount>=spinLimitMax){
+      showSpinLimitMsg();
+      return;
+    }
+  }
+  doSpin('user',idx=>{
+    // increment spin count
+    if(spinLimitEnabled){
+      const key='justshrt_spins_'+(currentUser.phone||'guest');
+      userSpinCount++;
+      localStorage.setItem(key,userSpinCount);
+      updateUserSpinStatus();
+    }
+    document.getElementById('claimBtn').style.display='block';
+    showWin(idx,true);
+  });
+}
 function adminSpin(){doSpin('admin',idx=>{spinResults.push({name:names[idx],color:colors[idx]});renderSpinResults();document.getElementById('claimBtn').style.display='none';showWin(idx,false);});}
 
 // ── WIN / CLAIM ──
@@ -470,6 +585,53 @@ function closeSuccess(){document.getElementById('successModal').classList.remove
 
 // ── ADMIN NAMES ──
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── SPIN LIMIT ADMIN CONTROLS ──
+function toggleUnlimited(){
+  spinLimitEnabled=!document.getElementById('unlimitedToggle').checked;
+  updateToggleUI();
+}
+function updateToggleUI(){
+  const on=spinLimitEnabled;
+  const slider=document.getElementById('toggleSlider');
+  const dot=document.getElementById('toggleDot');
+  const row=document.getElementById('limitRow');
+  const status=document.getElementById('spinLimitStatus');
+  if(slider){slider.style.background=on?'#1565c0':'var(--surface2)';slider.style.borderColor=on?'#4fc3f7':'rgba(79,195,247,0.15)';}
+  if(dot){dot.style.transform=on?'translateX(20px)':'translateX(0)';dot.style.background=on?'#90caf9':'var(--muted)';}
+  if(row) row.style.display=on?'flex':'none';
+  if(status) status.style.display=on?'block':'none';
+}
+function changeLimit(d){
+  spinLimitMax=Math.max(1,Math.min(99,spinLimitMax+d));
+  document.getElementById('limitVal').textContent=spinLimitMax;
+  document.getElementById('limitDisplay').textContent=spinLimitMax;
+}
+
+// ── USER SPIN STATUS ──
+function updateUserSpinStatus(){
+  const el=document.getElementById('userSpinStatus');
+  if(!el)return;
+  if(!spinLimitEnabled){el.textContent='';return;}
+  const key='justshrt_spins_'+(currentUser.phone||'guest');
+  const used=parseInt(localStorage.getItem(key)||'0');
+  const left=spinLimitMax-used;
+  if(left<=0){
+    el.innerHTML='<span style="color:#ef5350;">❌ คุณใช้สปินครบแล้ว</span>';
+    document.getElementById('userSpinBtn').disabled=true;
+    document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
+  }else{
+    el.innerHTML=`เหลือสปิน <span style="color:#4fc3f7;font-weight:700;">${left}/${spinLimitMax}</span> ครั้ง`;
+    document.getElementById('userSpinBtn').disabled=false;
+    document.getElementById('userSpinBtn').textContent='▶ SPIN THE WHEEL';
+  }
+}
+function showSpinLimitMsg(){
+  const el=document.getElementById('userSpinStatus');
+  if(el) el.innerHTML='<span style="color:#ef5350;font-size:0.85rem;">❌ คุณใช้สปินครบแล้ว ไม่สามารถหมุนได้อีก</span>';
+  document.getElementById('userSpinBtn').disabled=true;
+  document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
+}
 function addName(){
   const inp=document.getElementById('adminNameInput'),name=inp.value.trim();if(!name)return;
   names.push(name);colors.push(activePalette[names.length%activePalette.length]||activePalette[0]);
