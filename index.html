@@ -193,41 +193,6 @@
           </div>
           <button class="spin-btn" id="adminSpinBtn" onclick="adminSpin()" style="width:min(380px,92vw);">▶ TEST SPIN</button>
 
-          <!-- ── จำกัดสปิน ── -->
-          <div style="width:min(380px,92vw);background:var(--surface);border:1px solid rgba(79,195,247,0.15);border-radius:14px;padding:16px;">
-            <div style="font-family:'Bebas Neue',cursive;font-size:0.95rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
-              🎯 จำกัดสปินต่อ User <div style="flex:1;height:1px;background:linear-gradient(to right,rgba(79,195,247,0.3),transparent);"></div>
-            </div>
-            <!-- Toggle unlimited -->
-            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(79,195,247,0.08);">
-              <div>
-                <div style="font-size:0.88rem;font-weight:700;color:var(--ink);">ไม่จำกัด</div>
-                <div style="font-size:0.72rem;color:var(--muted);">ปิดเพื่อกำหนดจำนวน</div>
-              </div>
-              <label style="position:relative;width:42px;height:22px;cursor:pointer;flex-shrink:0;">
-                <input type="checkbox" id="unlimitedToggle" checked onchange="toggleUnlimited()" style="opacity:0;width:0;height:0;">
-                <span id="toggleSlider" style="position:absolute;inset:0;background:var(--surface2);border:1px solid rgba(79,195,247,0.15);border-radius:22px;transition:all 0.25s;"></span>
-                <span id="toggleDot" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all 0.25s;"></span>
-              </label>
-            </div>
-            <!-- Limit row -->
-            <div id="limitRow" style="display:none;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(79,195,247,0.08);">
-              <div>
-                <div style="font-size:0.88rem;font-weight:700;color:var(--ink);">สปินได้</div>
-                <div style="font-size:0.72rem;color:var(--muted);">ครั้ง / คน</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;">
-                <button onclick="changeLimit(-1)" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(79,195,247,0.2);background:var(--surface);color:#4fc3f7;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.15s;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">−</button>
-                <div id="limitVal" style="font-family:'Bebas Neue',cursive;font-size:1.6rem;color:#4fc3f7;min-width:32px;text-align:center;letter-spacing:1px;">1</div>
-                <button onclick="changeLimit(1)" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(79,195,247,0.2);background:var(--surface);color:#4fc3f7;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.15s;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">+</button>
-              </div>
-            </div>
-            <!-- Status bar -->
-            <div id="spinLimitStatus" style="display:none;font-size:0.72rem;color:var(--muted);text-align:center;padding:4px 0;">
-              User หมุนได้สูงสุด <span id="limitDisplay" style="color:#4fc3f7;font-weight:700;">1</span> ครั้ง
-            </div>
-          </div>
-
           <button class="btn btn-ink" onclick="publishWheel()" style="width:min(380px,92vw);padding:12px;font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:3px;">💾 บันทึก → อัพเดทวงล้อผู้ใช้</button>
           <div id="saveMsg" style="font-size:0.78rem;color:#4fc3f7;display:none;text-align:center;">✅ บันทึกแล้ว!</div>
           <button class="btn btn-ghost" onclick="goUserPage()" style="width:min(380px,92vw);font-size:0.8rem;">← ดูหน้าผู้ใช้</button>
@@ -235,6 +200,57 @@
       </div>
       
       <div>
+        <!-- ── จำกัดสปิน Panel ── -->
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">🎯 จำกัดสปิน / User <span class="line"></span></div>
+
+          <!-- ON/OFF Toggle -->
+          <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:10px;border:1px solid rgba(79,195,247,0.08);">
+            <div>
+              <div style="font-size:0.88rem;font-weight:700;color:var(--ink);">เปิดจำกัดสปิน</div>
+              <div style="font-size:0.7rem;color:var(--muted);">ปิด = ไม่จำกัด</div>
+            </div>
+            <label style="position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
+              <input type="checkbox" id="unlimitedToggle" checked onchange="toggleUnlimited()" style="opacity:0;width:0;height:0;">
+              <span id="toggleSlider" style="position:absolute;inset:0;background:var(--surface2);border:1px solid rgba(79,195,247,0.15);border-radius:24px;transition:all 0.25s;"></span>
+              <span id="toggleDot" style="position:absolute;top:4px;left:4px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all 0.25s;"></span>
+            </label>
+          </div>
+
+          <!-- จำนวนครั้ง -->
+          <div id="limitRow" style="display:none;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;border:1px solid rgba(79,195,247,0.08);">
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;color:var(--ink);">สปินได้</div>
+                <div style="font-size:0.7rem;color:var(--muted);">ครั้ง / คน</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <button onclick="changeLimit(-1)" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,195,247,0.2);background:var(--surface);color:#4fc3f7;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">−</button>
+                <div id="limitVal" style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;min-width:36px;text-align:center;">1</div>
+                <button onclick="changeLimit(1)" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,195,247,0.2);background:var(--surface);color:#4fc3f7;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">+</button>
+              </div>
+            </div>
+
+            <!-- สถิติ user ที่ใช้สปินแล้ว -->
+            <div style="background:var(--surface2);border-radius:10px;padding:11px 14px;border:1px solid rgba(79,195,247,0.08);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="font-size:0.82rem;font-weight:700;color:var(--ink);">สถิติการใช้สปิน</div>
+                <button onclick="refreshSpinStats()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.75rem;">🔄</button>
+              </div>
+              <div id="spinStatsWrap" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;">
+                <div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:8px;">กด 🔄 เพื่อโหลด</div>
+              </div>
+            </div>
+
+            <!-- Reset -->
+            <button onclick="resetAllSpins()" class="btn btn-red" style="width:100%;font-size:0.8rem;padding:9px;">🔄 รีเซ็ตสปินทุกคน</button>
+          </div>
+
+          <div id="spinLimitStatus" style="display:none;margin-top:8px;background:rgba(79,195,247,0.06);border:1px solid rgba(79,195,247,0.15);border-radius:8px;padding:8px 12px;font-size:0.75rem;color:#4fc3f7;text-align:center;">
+            User หมุนได้สูงสุด <span id="limitDisplay" style="font-weight:700;">1</span> ครั้ง / คน
+          </div>
+        </div>
+
         <div class="panel" style="margin-bottom:14px;">
           <div class="panel-title">📦 คำสั่งรับสินค้า <span class="line"></span></div>
           <div id="orderCount" style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;"></div>
@@ -602,6 +618,54 @@ function updateToggleUI(){
   if(row) row.style.display=on?'flex':'none';
   if(status) status.style.display=on?'block':'none';
 }
+function refreshSpinStats(){
+  const wrap=document.getElementById('spinStatsWrap');
+  if(!wrap)return;
+  // scan localStorage for all justshrt_spins_ keys
+  const stats=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('justshrt_spins_')){
+      const phone=k.replace('justshrt_spins_','');
+      const used=parseInt(localStorage.getItem(k)||'0');
+      stats.push({phone,used});
+    }
+  }
+  if(!stats.length){
+    wrap.innerHTML='<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:8px;">ยังไม่มีข้อมูล</div>';
+    return;
+  }
+  stats.sort((a,b)=>b.used-a.used);
+  wrap.innerHTML=stats.map(s=>{
+    const pct=Math.min(100,Math.round((s.used/spinLimitMax)*100));
+    const over=s.used>=spinLimitMax;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(79,195,247,0.06);">
+      <div style="font-size:0.72rem;color:var(--ink2);flex:1;">📞 ${escHtml(s.phone)}</div>
+      <div style="font-size:0.7rem;color:${over?'#ef5350':'#4fc3f7'};font-weight:700;white-space:nowrap;">${s.used}/${spinLimitMax}</div>
+      <div style="width:40px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;">
+        <div style="width:${pct}%;height:100%;background:${over?'#ef5350':'#4fc3f7'};border-radius:3px;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function resetAllSpins(){
+  if(!confirm('รีเซ็ตสปินทุกคน?\nทุกคนจะหมุนได้ใหม่'))return;
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('justshrt_spins_'))keys.push(k);
+  }
+  keys.forEach(k=>localStorage.removeItem(k));
+  userSpinCount=0;
+  refreshSpinStats();
+  // reset user spin btn if on user page
+  const btn=document.getElementById('userSpinBtn');
+  if(btn){btn.disabled=false;btn.textContent='▶ SPIN THE WHEEL';}
+  const st=document.getElementById('userSpinStatus');
+  if(st)updateUserSpinStatus();
+}
+
 function changeLimit(d){
   spinLimitMax=Math.max(1,Math.min(99,spinLimitMax+d));
   document.getElementById('limitVal').textContent=spinLimitMax;
