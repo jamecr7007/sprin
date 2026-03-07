@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JUSTSHRT — Wheel of Fortune</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0d1b2a; --surface:#132236; --surface2:#1a2e44; --ink:#e8f4fd; --ink2:#a8c8e8; --muted:#5a88aa; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink); font-family:'Kanit',sans-serif; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse at 15% 25%,rgba(79,195,247,0.06) 0%,transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(56,189,248,0.05) 0%,transparent 50%); pointer-events:none; z-index:0; }
+  .page { display:none; min-height:100vh; position:relative; z-index:1; }
+  .page.active { display:flex; flex-direction:column; }
+  #pageRegister { align-items:center; justify-content:center; padding:20px; }
+  #pageUser { align-items:center; padding:16px; }
+  #pageAdmin { align-items:stretch; padding:0; }
+  .input-field { background:var(--surface2); border:1px solid rgba(79,195,247,0.15); border-radius:10px; padding:10px 14px; color:var(--ink); font-family:'Kanit',sans-serif; font-size:0.9rem; outline:none; transition:border-color 0.2s; display:block; width:100%; }
+  .input-field:focus { border-color:#4fc3f7; box-shadow:0 0 0 2px rgba(79,195,247,0.1); }
+  .input-field::placeholder { color:var(--muted); }
+  .btn { padding:10px 16px; border-radius:10px; border:none; font-family:'Kanit',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; transition:all 0.15s; }
+  .btn-ink { background:linear-gradient(135deg,#1565c0,#0d47a1); color:#90caf9; border:1px solid rgba(79,195,247,0.2); }
+  .btn-ink:hover { background:linear-gradient(135deg,#1976d2,#1565c0); transform:translateY(-1px); }
+  .btn-ghost { background:var(--surface2); color:var(--ink2); border:1px solid rgba(79,195,247,0.15); }
+  .btn-ghost:hover { border-color:rgba(79,195,247,0.4); }
+  .btn-red { background:rgba(198,40,40,0.12); color:#ef9a9a; border:1px solid rgba(198,40,40,0.25); }
+  .btn-red:hover { background:rgba(198,40,40,0.22); }
+  .panel { background:var(--surface); border:1px solid rgba(79,195,247,0.12); border-radius:14px; padding:18px; box-shadow:0 2px 16px rgba(0,0,0,0.2); }
+  .panel-title { font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:3px; color:#4fc3f7; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .panel-title .line { flex:1; height:1px; background:linear-gradient(to right,rgba(79,195,247,0.3),transparent); }
+  .modal-overlay { position:fixed; inset:0; background:rgba(5,10,20,0.92); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+  .modal-overlay.show { opacity:1; pointer-events:all; }
+  .modal { background:var(--surface); border:2px solid rgba(79,195,247,0.3); border-radius:20px; padding:36px 28px; text-align:center; max-width:360px; width:90%; transform:scale(0.85); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1); box-shadow:0 0 60px rgba(79,195,247,0.1),0 30px 80px rgba(0,0,0,0.6); }
+  .modal-overlay.show .modal { transform:scale(1); }
+  /* REGISTER */
+  .register-box { background:var(--surface); border:2px solid rgba(79,195,247,0.2); border-radius:24px; padding:44px 36px; text-align:center; max-width:380px; width:100%; box-shadow:0 0 60px rgba(79,195,247,0.08),0 20px 60px rgba(0,0,0,0.5); }
+  .logo-big { font-family:'Bebas Neue',cursive; font-size:4rem; color:#4fc3f7; letter-spacing:6px; text-shadow:0 0 30px rgba(79,195,247,0.5); line-height:1; margin-bottom:4px; }
+  .logo-sub { font-size:0.68rem; letter-spacing:4px; color:var(--muted); margin-bottom:32px; }
+  /* USER WHEEL */
+  .user-wrap { max-width:540px; width:100%; }
+  .user-header { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; background:linear-gradient(135deg,#0a3060,#0d1b2a); border:1px solid rgba(79,195,247,0.2); border-radius:14px; margin-bottom:18px; }
+  .brand-name { font-family:'Bebas Neue',cursive; font-size:1.8rem; color:#4fc3f7; letter-spacing:4px; line-height:1; }
+  .brand-sub { font-size:0.56rem; letter-spacing:3px; color:rgba(168,200,232,0.45); font-weight:300; }
+  .user-chip { background:rgba(79,195,247,0.1); border:1px solid rgba(79,195,247,0.2); border-radius:20px; padding:4px 12px; font-size:0.75rem; color:#4fc3f7; }
+  .admin-link { background:none; border:1px solid rgba(79,195,247,0.2); color:var(--muted); font-family:'Kanit',sans-serif; font-size:0.72rem; padding:5px 10px; border-radius:8px; cursor:pointer; transition:all 0.15s; }
+  .admin-link:hover { color:#4fc3f7; border-color:rgba(79,195,247,0.4); }
+  .wheel-section { display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; }
+  .wheel-wrapper { position:relative; }
+  .wheel-canvas { display:block; border-radius:50%; box-shadow:0 0 0 6px #1a2e44,0 0 0 10px rgba(79,195,247,0.2),0 0 0 14px rgba(79,195,247,0.06),0 16px 60px rgba(0,0,0,0.5); }
+  .wheel-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:70px; height:70px; background:linear-gradient(135deg,#1565c0,#0d47a1); border-radius:50%; z-index:10; display:flex; align-items:center; justify-content:center; cursor:pointer; border:3px solid rgba(79,195,247,0.5); box-shadow:0 0 24px rgba(79,195,247,0.35); transition:transform 0.15s; }
+  .wheel-center:hover { transform:translate(-50%,-50%) scale(1.08); }
+  .spin-btn { padding:14px; background:linear-gradient(135deg,#1565c0,#0d47a1); border:1px solid rgba(79,195,247,0.3); border-radius:12px; font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:4px; color:#90caf9; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 20px rgba(21,101,192,0.4); width:min(500px,92vw); }
+  .spin-btn:hover { transform:translateY(-2px); }
+  .spin-btn:disabled { background:var(--surface2); color:var(--muted); border-color:transparent; transform:none; box-shadow:none; cursor:not-allowed; }
+  /* ADMIN */
+  .admin-container { max-width:1200px; margin:0 auto; padding:20px; width:100%; }
+  .admin-header { display:flex; align-items:center; justify-content:space-between; padding:12px 22px; background:linear-gradient(135deg,#0a3060,#0d1b2a); border:1px solid rgba(79,195,247,0.2); border-radius:14px; margin-bottom:20px; }
+  .admin-grid { display:grid; grid-template-columns:290px 1fr 290px; gap:18px; align-items:start; }
+  @media(max-width:960px){ .admin-grid{grid-template-columns:1fr 1fr;} .admin-center{order:-1;grid-column:1/-1;} }
+  @media(max-width:560px){ .admin-grid{grid-template-columns:1fr;} }
+  .name-list { max-height:290px; overflow-y:auto; margin-bottom:10px; display:flex; flex-direction:column; gap:5px; }
+  .name-list::-webkit-scrollbar { width:3px; }
+  .name-item { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid rgba(79,195,247,0.08); border-radius:9px; padding:6px 8px; }
+  .color-swatch { width:20px; height:20px; border-radius:5px; flex-shrink:0; position:relative; overflow:hidden; cursor:pointer; border:2px solid rgba(0,0,0,0.15); }
+  .color-swatch input[type=color] { position:absolute; inset:-4px; width:calc(100%+8px); height:calc(100%+8px); opacity:0; cursor:pointer; }
+  .name-text { flex:1; font-size:0.82rem; font-weight:500; color:var(--ink2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75px; }
+  .weight-wrap { display:flex; flex-direction:column; align-items:center; gap:1px; flex-shrink:0; }
+  .weight-input { width:40px; background:var(--surface2); border:1px solid rgba(79,195,247,0.2); border-radius:5px; color:#4fc3f7; font-family:'Kanit',sans-serif; font-size:0.7rem; font-weight:600; text-align:center; padding:2px 3px; outline:none; }
+  .weight-input:focus { border-color:#4fc3f7; }
+  .weight-pct { font-size:0.57rem; color:var(--muted); }
+  .img-btn { width:28px; height:28px; border-radius:6px; background:var(--surface2); border:1.5px dashed rgba(79,195,247,0.3); display:flex; align-items:center; justify-content:center; font-size:0.75rem; cursor:pointer; flex-shrink:0; overflow:hidden; transition:all 0.15s; }
+  .img-btn.has-img { border-style:solid; border-color:rgba(79,195,247,0.4); padding:0; }
+  .name-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.8rem; padding:0 1px; line-height:1; flex-shrink:0; }
+  .name-del:hover { color:#ef5350; }
+  .palette-row { display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
+  .palette-preset { display:flex; border-radius:7px; overflow:hidden; cursor:pointer; border:2px solid transparent; height:22px; transition:all 0.15s; }
+  .palette-preset:hover { transform:scale(1.08); border-color:var(--ink); }
+  .palette-swatch { width:14px; height:100%; }
+  .orders-list { max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+  .order-card { background:var(--surface2); border-radius:10px; padding:10px 12px; border:1px solid rgba(79,195,247,0.1); }
+  .empty-state { text-align:center; color:var(--muted); font-size:0.8rem; padding:20px; font-weight:300; }
+  /* LOGIN OVERLAY */
+  .admin-login-overlay { position:fixed; inset:0; background:rgba(5,10,20,0.95); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+  .admin-login-overlay.show { opacity:1; pointer-events:all; }
+  .login-box { background:var(--surface); border:2px solid rgba(79,195,247,0.25); border-radius:22px; padding:40px 32px; text-align:center; max-width:340px; width:90%; box-shadow:0 0 50px rgba(79,195,247,0.1),0 20px 60px rgba(0,0,0,0.5); }
+  .login-box h3 { font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:4px; color:#4fc3f7; margin-bottom:6px; }
+  .login-box p { font-size:0.78rem; color:var(--muted); margin-bottom:18px; font-weight:300; }
+  .confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:3000; }
+  @keyframes popIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
+  @media(max-width:480px){.logo-big{font-size:3rem;}.register-box{padding:28px 20px;}.user-wrap{padding:0;}}
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE: REGISTER ══ -->
+<div id="pageRegister" class="page active">
+  <div class="register-box">
+    <div class="logo-big">JUSTSHRT</div>
+    <div class="logo-sub">VINTAGE &amp; SECONDHAND</div>
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:var(--ink2);margin-bottom:6px;">🎡 ลุ้นรางวัล</div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:20px;font-weight:300;">กรอกข้อมูลเพื่อเข้าร่วมลุ้น</div>
+    <input class="input-field" id="regName" placeholder="ชื่อ-นามสกุล *" style="margin-bottom:10px;">
+    <input class="input-field" id="regPhone" placeholder="เบอร์โทรศัพท์ *" type="tel" style="margin-bottom:8px;">
+    <div id="regErr" style="color:#ef5350;font-size:0.75rem;margin-bottom:10px;display:none;">กรุณากรอกชื่อและเบอร์โทร</div>
+    <button class="btn btn-ink" onclick="registerUser()" style="width:100%;padding:14px;font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;">เข้าร่วมลุ้นรางวัล 🎉</button>
+    <div style="font-size:0.68rem;color:var(--muted);margin-top:14px;">ข้อมูลของคุณจะถูกส่งให้ทีมงานเมื่อกดรับสินค้า</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: USER WHEEL ══ -->
+<div id="pageUser" class="page">
+  <div class="user-wrap">
+    <div class="user-header">
+      <div><div class="brand-name">JUSTSHRT</div><div class="brand-sub">VINTAGE &amp; SECONDHAND · WHEEL OF FORTUNE</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div class="user-chip" id="userChip">👤 —</div>
+        <button class="admin-link" onclick="showAdminLogin()">🔐 ADMIN</button>
+      </div>
+    </div>
+    <div class="wheel-section">
+      <div class="wheel-wrapper">
+        <canvas id="userWheel" class="wheel-canvas"></canvas>
+        <div class="wheel-center" onclick="userSpin()">
+          <div style="font-family:'Bebas Neue',cursive;font-size:0.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;">JUST<br>SHRT</div>
+        </div>
+      </div>
+      <button class="spin-btn" id="userSpinBtn" onclick="userSpin()">▶ SPIN THE WHEEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: ADMIN ══ -->
+<div id="pageAdmin" class="page">
+  <div class="admin-container">
+    <div class="admin-header">
+      <div><div class="brand-name">JUSTSHRT</div><div class="brand-sub">ADMIN PANEL</div></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="background:#1565c0;color:#90caf9;font-family:'Bebas Neue',cursive;font-size:0.88rem;letter-spacing:2px;padding:6px 14px;border-radius:7px;border:1px solid rgba(79,195,247,0.3);">🔓 ADMIN</div>
+        <button class="btn btn-red" onclick="adminLogout()" style="font-size:0.78rem;padding:6px 12px;">ออกจากระบบ</button>
+      </div>
+    </div>
+    <div class="admin-grid">
+      <!-- LEFT -->
+      <div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">รายชื่อ / รูป <span class="line"></span></div>
+          <div class="name-list" id="adminNameList"></div>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <input class="input-field" id="adminNameInput" placeholder="พิมพ์ชื่อ..." style="flex:1;">
+            <button class="btn btn-ink" onclick="addName()">+</button>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-ghost" onclick="loadDefault()" style="flex:1;font-size:0.76rem;">ตัวอย่าง</button>
+            <button class="btn btn-red" onclick="clearAll()" style="flex:1;font-size:0.76rem;">ล้าง</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">ธีมสี <span class="line"></span></div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;font-weight:300;">คลิก ● เพื่อเปลี่ยนสี หรือเลือก Preset</div>
+          <div class="palette-row" id="palettePicker"></div>
+        </div>
+      </div>
+      <!-- CENTER -->
+      <div class="admin-center">
+        <div class="wheel-section">
+          <div class="wheel-wrapper">
+            <canvas id="adminWheel" class="wheel-canvas"></canvas>
+            <div class="wheel-center" onclick="adminSpin()">
+              <div style="font-family:'Bebas Neue',cursive;font-size:0.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;">JUST<br>SHRT</div>
+            </div>
+          </div>
+          <button class="spin-btn" id="adminSpinBtn" onclick="adminSpin()" style="width:min(380px,92vw);">▶ TEST SPIN</button>
+          <button class="btn btn-ink" onclick="publishWheel()" style="width:min(380px,92vw);padding:12px;font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:3px;">💾 บันทึก → อัพเดทวงล้อผู้ใช้</button>
+          <div id="saveMsg" style="font-size:0.78rem;color:#4fc3f7;display:none;text-align:center;">✅ บันทึกแล้ว!</div>
+          <button class="btn btn-ghost" onclick="goUserPage()" style="width:min(380px,92vw);font-size:0.8rem;">← ดูหน้าผู้ใช้</button>
+        </div>
+      </div>
+      <!-- RIGHT -->
+      <div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">📦 คำสั่งรับสินค้า <span class="line"></span></div>
+          <div id="orderCount" style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;"></div>
+          <div class="orders-list" id="adminOrdersList"><div class="empty-state">ยังไม่มีคำสั่ง</div></div>
+          <div style="display:flex;gap:6px;margin-top:10px;">
+            <button class="btn btn-ghost" onclick="renderOrders()" style="flex:1;font-size:0.76rem;">🔄 รีเฟรช</button>
+            <button class="btn btn-red" onclick="clearOrders()" style="flex:1;font-size:0.76rem;">ล้าง</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">📊 ผลสปิน <span class="line"></span></div>
+          <div class="orders-list" id="adminResults" style="max-height:180px;"><div class="empty-state">ยังไม่มีผล</div></div>
+          <button class="btn btn-ghost" onclick="spinResults=[];renderSpinResults();" style="width:100%;margin-top:8px;font-size:0.76rem;">ล้าง</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN LOGIN OVERLAY ══ -->
+<div class="admin-login-overlay" id="adminLoginOverlay">
+  <div class="login-box">
+    <h3>🔐 ADMIN</h3>
+    <p>ใส่รหัสผ่านเพื่อเข้าหน้าแอดมิน</p>
+    <input class="input-field" type="password" id="adminPassInput" placeholder="รหัสผ่าน..." onkeydown="if(event.key==='Enter')checkAdminPass()">
+    <div style="color:#ef5350;font-size:0.75rem;margin-top:6px;display:none;" id="loginError">รหัสผ่านไม่ถูกต้อง</div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-ghost" onclick="closeAdminLogin()" style="flex:1;">ยกเลิก</button>
+      <button class="btn btn-ink" onclick="checkAdminPass()" style="flex:1;font-family:'Bebas Neue',cursive;letter-spacing:2px;">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WIN MODAL ══ -->
+<div class="modal-overlay" id="winModal">
+  <div class="modal">
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:14px;text-shadow:0 0 16px rgba(79,195,247,0.5);">🎉 ยินดีด้วย! 🎉</div>
+    <div id="winImgWrap" style="display:none;width:220px;height:220px;border-radius:14px;overflow:hidden;margin:0 auto 14px;border:3px solid rgba(79,195,247,0.4);box-shadow:0 0 24px rgba(79,195,247,0.2);"><img id="winImg" style="width:100%;height:100%;object-fit:contain;background:#0d1b2a;"></div>
+    <div id="winColor" style="width:56px;height:56px;border-radius:50%;margin:10px auto 12px;border:3px solid rgba(79,195,247,0.4);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;"></div>
+    <div id="winName" style="font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:16px;"></div>
+    <button class="btn btn-ink" id="claimBtn" onclick="openClaim()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;margin-bottom:8px;">🎁 รับสินค้า</button>
+    <button class="btn btn-ghost" onclick="closeWin()" style="width:100%;padding:10px;font-size:0.85rem;">ปิด</button>
+  </div>
+</div>
+
+<!-- ══ CLAIM MODAL ══ -->
+<div class="modal-overlay" id="claimModal">
+  <div class="modal">
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:6px;">📦 ยืนยันรับสินค้า</div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;">ทีมงานจะติดต่อกลับหาคุณ</div>
+    <input class="input-field" id="claimName" placeholder="ชื่อ-นามสกุล *" style="margin-bottom:10px;">
+    <input class="input-field" id="claimPhone" placeholder="เบอร์โทรศัพท์ *" type="tel" style="margin-bottom:10px;">
+    <input class="input-field" id="claimNote" placeholder="หมายเหตุ (ไม่บังคับ)" style="margin-bottom:8px;">
+    <div id="claimErr" style="color:#ef5350;font-size:0.75rem;margin-bottom:10px;display:none;">กรุณากรอกชื่อและเบอร์</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" onclick="closeClaim()" style="flex:1;padding:10px;">ยกเลิก</button>
+      <button class="btn btn-ink" onclick="submitClaim()" style="flex:1;padding:10px;font-family:'Bebas Neue',cursive;letter-spacing:2px;">ยืนยัน ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUCCESS MODAL ══ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div style="font-size:3rem;margin-bottom:12px;">✅</div>
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:8px;">ส่งข้อมูลแล้ว!</div>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;">ทีมงานจะติดต่อกลับหาคุณเร็วๆ นี้ 😊</div>
+    <button class="btn btn-ink" onclick="closeSuccess()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;">ตกลง</button>
+  </div>
+</div>
+
+<canvas class="confetti-canvas" id="confetti"></canvas>
+
+<script>
+const ADMIN_PASS='123';
+const PALETTES=[
+  ['#c9a86c','#d4614a','#7a9e7e','#4a6fa5','#b5835a','#8b5e52'],
+  ['#a8956c','#7c9e8a','#c4835a','#6a7fa0','#b08060','#8a7060'],
+  ['#e8352a','#f5c842','#3a7bd5','#e85d04','#6d2b8a','#1a1209'],
+  ['#f4a7b9','#b8d8d8','#f7dc6f','#a8d8a8','#d4a5c7','#f0c080'],
+  ['#ff006e','#3a0ca3','#4cc9f0','#f72585','#7209b7','#4361ee'],
+];
+
+let names=[],colors=[],images=[],weights=[],imageCache=[];
+let activePalette=[...PALETTES[0]];
+let currentUser={name:'',phone:''};
+let currentWinner='';
+let spinResults=[];
+let uCtx,uW,uH,uR,uAngle=0,uSpinning=false;
+let aCtx,aW,aH,aR,aAngle=0,aSpinning=false;
+
+// ── PAGES ──
+function showPage(id){
+  ['pageRegister','pageUser','pageAdmin'].forEach(p=>{
+    const el=document.getElementById(p);
+    el.classList.remove('active');
+    el.style.display='none';
+  });
+  const el=document.getElementById(id);
+  el.style.display='flex';
+  el.classList.add('active');
+}
+
+// ── REGISTER ──
+function registerUser(){
+  const name=document.getElementById('regName').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  if(!name||!phone){document.getElementById('regErr').style.display='block';return;}
+  currentUser={name,phone};
+  document.getElementById('userChip').textContent='👤 '+name;
+  showPage('pageUser');
+  initUserCanvas();
+  loadWheelData();
+  drawWheel('user');
+}
+document.getElementById('regName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('regPhone').focus();});
+document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')registerUser();});
+
+// ── ADMIN AUTH ──
+function showAdminLogin(){
+  document.getElementById('adminLoginOverlay').classList.add('show');
+  document.getElementById('adminPassInput').value='';
+  document.getElementById('loginError').style.display='none';
+  setTimeout(()=>document.getElementById('adminPassInput').focus(),100);
+}
+function closeAdminLogin(){document.getElementById('adminLoginOverlay').classList.remove('show');}
+function checkAdminPass(){
+  if(document.getElementById('adminPassInput').value===ADMIN_PASS){
+    closeAdminLogin();
+    showPage('pageAdmin');
+    initAdminCanvas();
+    loadWheelData();
+    drawWheel('admin');
+    renderAdminNameList();
+    buildPaletteUI();
+    renderOrders();
+    setInterval(renderOrders,5000);
+  }else{
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('adminPassInput').value='';
+    document.getElementById('adminPassInput').focus();
+  }
+}
+document.getElementById('adminPassInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPass();});
+document.getElementById('adminLoginOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('adminLoginOverlay'))closeAdminLogin();});
+function adminLogout(){showPage('pageUser');drawWheel('user');}
+function goUserPage(){showPage('pageUser');drawWheel('user');}
+
+// ── DATA ──
+function loadWheelData(){
+  try{
+    const d=JSON.parse(localStorage.getItem('justshrt_wheel')||'null');
+    if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];preloadImages();}
+  }catch(e){}
+}
+function publishWheel(){
+  localStorage.setItem('justshrt_wheel',JSON.stringify({names,colors,images,weights}));
+  preloadImages(); drawWheel('user');
+  const m=document.getElementById('saveMsg'); m.style.display='block';
+  setTimeout(()=>m.style.display='none',3000);
+}
+function preloadImages(){
+  imageCache=images.map(src=>{if(!src)return null;const img=new Image();img.src=src;return img;});
+}
+function saveOrder(o){
+  try{const orders=JSON.parse(localStorage.getItem('justshrt_orders')||'[]');orders.push(o);localStorage.setItem('justshrt_orders',JSON.stringify(orders));}catch(e){}
+}
+
+// ── CANVAS INIT ──
+function initUserCanvas(){
+  const c=document.getElementById('userWheel'),ctx=c.getContext('2d');
+  const D=Math.min(460,window.innerWidth-32),DPR=window.devicePixelRatio||2;
+  c.width=D*DPR;c.height=D*DPR;c.style.width=D+'px';c.style.height=D+'px';ctx.scale(DPR,DPR);
+  uCtx=ctx;uW=D;uH=D;uR=D/2-10;
+}
+function initAdminCanvas(){
+  const c=document.getElementById('adminWheel'),ctx=c.getContext('2d');
+  const D=Math.min(400,window.innerWidth-80),DPR=window.devicePixelRatio||2;
+  c.width=D*DPR;c.height=D*DPR;c.style.width=D+'px';c.style.height=D+'px';ctx.scale(DPR,DPR);
+  aCtx=ctx;aW=D;aH=D;aR=D/2-10;
+}
+
+// ── DRAW ──
+function drawWheel(target){
+  const u=target==='user';
+  const ctx=u?uCtx:aCtx,W=u?uW:aW,H=u?uH:aH,R=u?uR:aR,angle=u?uAngle:aAngle;
+  if(!ctx)return;
+  ctx.clearRect(0,0,W,H);
+  const n=names.length;
+  if(n===0){
+    ctx.fillStyle='#1a2e44';ctx.beginPath();ctx.arc(W/2,H/2,R,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#5a88aa';ctx.font='600 14px Kanit,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('เพิ่มชื่อก่อนเริ่ม',W/2,H/2);return;
+  }
+  const arc=(2*Math.PI)/n;
+  ctx.save();ctx.translate(W/2,H/2);ctx.rotate(angle);
+  for(let i=0;i<n;i++){
+    const s=i*arc,e=(i+1)*arc,a=e-s;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R,s,e);ctx.closePath();
+    ctx.fillStyle='#0d1b2a';ctx.fill();
+    ctx.strokeStyle='rgba(79,195,247,0.25)';ctx.lineWidth=2;ctx.stroke();
+    ctx.save();ctx.rotate(s+a/2);
+    if(imageCache[i]&&imageCache[i].complete&&imageCache[i].naturalWidth>0){
+      ctx.save();ctx.rotate(-(s+a/2));
+      ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R-2,s,e);ctx.closePath();ctx.clip();
+      const iw=imageCache[i].naturalWidth,ih=imageCache[i].naturalHeight;
+      const sc=Math.max((2*R*Math.sin(a/2))/iw,R/ih);
+      const dw=iw*sc,dh=ih*sc,mx=Math.cos(s+a/2)*(R*.6),my=Math.sin(s+a/2)*(R*.6);
+      ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+      ctx.drawImage(imageCache[i],mx-dw/2,my-dh/2,dw,dh);ctx.restore();
+    }else{
+      const sz=Math.min(28,Math.max(10,185/n));
+      ctx.save();ctx.translate(R*.55,0);ctx.fillStyle='rgba(255,255,255,0.55)';
+      ctx.beginPath();ctx.moveTo(-sz*.5,-sz*.15);ctx.lineTo(-sz*.5,sz*.55);ctx.lineTo(sz*.5,sz*.55);ctx.lineTo(sz*.5,-sz*.15);ctx.lineTo(sz*.8,-sz*.5);ctx.lineTo(sz*.5,-sz*.5);ctx.lineTo(sz*.2,-sz*.15);ctx.quadraticCurveTo(0,sz*.05,-sz*.2,-sz*.15);ctx.lineTo(-sz*.5,-sz*.5);ctx.lineTo(-sz*.8,-sz*.5);ctx.closePath();ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.strokeStyle='rgba(79,195,247,0.2)';ctx.lineWidth=4;ctx.stroke();
+  ctx.restore();
+  // Pointer
+  const bh=R*.38,tipY=-(R-4),baseY=tipY-R*.7;
+  ctx.save();ctx.translate(W/2,H/2);
+  ctx.beginPath();ctx.moveTo(0,tipY);ctx.lineTo(-bh,baseY);ctx.lineTo(bh,baseY);ctx.closePath();
+  ctx.fillStyle='#4fc3f7';ctx.shadowColor='rgba(79,195,247,1)';ctx.shadowBlur=24;ctx.fill();
+  ctx.beginPath();ctx.moveTo(0,tipY+12);ctx.lineTo(-bh*.4,baseY+16);ctx.lineTo(bh*.4,baseY+16);ctx.closePath();
+  ctx.fillStyle='rgba(255,255,255,0.25)';ctx.shadowBlur=0;ctx.fill();
+  ctx.restore();
+}
+
+// ── SPIN ──
+function doSpin(target,onWin){
+  const u=target==='user';
+  if(u?uSpinning:aSpinning)return;
+  if(names.length<2)return;
+  if(u)uSpinning=true;else aSpinning=true;
+  const btn=document.getElementById(u?'userSpinBtn':'adminSpinBtn');
+  btn.disabled=true;btn.textContent='... SPINNING';
+  const n=names.length,rw=weights.reduce((a,b)=>a+b,0),tw=rw>0?rw:n;
+  let rand=Math.random()*tw,wIdx=0;
+  for(let i=0;i<n;i++){rand-=rw>0?(weights[i]||0):1;if(rand<=0){wIdx=i;break;}}
+  const segArc=(2*Math.PI)/n,wc=(wIdx+.5)*segArc,tgt=-Math.PI/2-wc;
+  const ca=u?uAngle:aAngle,spins=5+Math.floor(Math.random()*5);
+  const tr=spins*2*Math.PI+((tgt-ca%(2*Math.PI)+4*Math.PI)%(2*Math.PI));
+  const sa=ca,dur=4500+Math.random()*1500,t0=performance.now();
+  function ease(t){return 1-Math.pow(1-t,4);}
+  (function animate(now){
+    const t=Math.min((now-t0)/dur,1),a=sa+ease(t)*tr;
+    if(u)uAngle=a;else aAngle=a;drawWheel(target);
+    if(t<1){requestAnimationFrame(animate);}
+    else{
+      const f=(sa+tr)%(2*Math.PI);if(u)uAngle=f;else aAngle=f;
+      if(u)uSpinning=false;else aSpinning=false;
+      btn.disabled=false;btn.textContent=u?'▶ SPIN THE WHEEL':'▶ TEST SPIN';
+      onWin(wIdx);
+    }
+  })(performance.now());
+}
+
+function userSpin(){doSpin('user',idx=>{document.getElementById('claimBtn').style.display='block';showWin(idx,true);});}
+function adminSpin(){doSpin('admin',idx=>{spinResults.push({name:names[idx],color:colors[idx]});renderSpinResults();document.getElementById('claimBtn').style.display='none';showWin(idx,false);});}
+
+// ── WIN / CLAIM ──
+function showWin(idx,showClaim){
+  currentWinner=names[idx];const img=images[idx],color=colors[idx]||'#4a6fa5';
+  if(img){document.getElementById('winImg').src=img;document.getElementById('winImgWrap').style.display='block';document.getElementById('winColor').style.display='none';}
+  else{document.getElementById('winImgWrap').style.display='none';document.getElementById('winColor').style.display='block';document.getElementById('winColor').style.background=color;}
+  document.getElementById('winName').textContent=currentWinner;
+  document.getElementById('claimBtn').style.display=showClaim?'block':'none';
+  document.getElementById('winModal').classList.add('show');
+  launchConfetti(color);
+}
+function closeWin(){document.getElementById('winModal').classList.remove('show');}
+function openClaim(){
+  document.getElementById('winModal').classList.remove('show');
+  document.getElementById('claimName').value=currentUser.name;
+  document.getElementById('claimPhone').value=currentUser.phone;
+  document.getElementById('claimNote').value='';
+  document.getElementById('claimErr').style.display='none';
+  document.getElementById('claimModal').classList.add('show');
+}
+function closeClaim(){document.getElementById('claimModal').classList.remove('show');}
+function submitClaim(){
+  const name=document.getElementById('claimName').value.trim(),phone=document.getElementById('claimPhone').value.trim(),note=document.getElementById('claimNote').value.trim();
+  if(!name||!phone){document.getElementById('claimErr').style.display='block';return;}
+  saveOrder({name,phone,note,item:currentWinner,time:new Date().toLocaleString('th-TH')});
+  document.getElementById('claimModal').classList.remove('show');
+  document.getElementById('successModal').classList.add('show');
+}
+function closeSuccess(){document.getElementById('successModal').classList.remove('show');}
+
+// ── ADMIN NAMES ──
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function addName(){
+  const inp=document.getElementById('adminNameInput'),name=inp.value.trim();if(!name)return;
+  names.push(name);colors.push(activePalette[names.length%activePalette.length]||activePalette[0]);
+  images.push(null);imageCache.push(null);weights.push(0);inp.value='';
+  renderAdminNameList();drawWheel('admin');
+}
+document.getElementById('adminNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')addName();});
+function removeName(i){names.splice(i,1);colors.splice(i,1);images.splice(i,1);imageCache.splice(i,1);weights.splice(i,1);renderAdminNameList();drawWheel('admin');}
+function clearAll(){if(names.length&&!confirm('ลบทั้งหมด?'))return;names=[];colors=[];images=[];imageCache=[];weights=[];renderAdminNameList();drawWheel('admin');}
+function loadDefault(){names=['เสื้อ A','เสื้อ B','เสื้อ C','เสื้อ D','เสื้อ E','เสื้อ F'];colors=names.map((_,i)=>activePalette[i%activePalette.length]);images=names.map(()=>null);imageCache=names.map(()=>null);weights=names.map(()=>0);renderAdminNameList();drawWheel('admin');}
+function changeWeight(i,v){weights[i]=Math.min(100,Math.max(0,parseFloat(v)||0));}
+function changeColor(i,c){colors[i]=c;drawWheel('admin');}
+function uploadImage(i,inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{images[i]=e.target.result;const img=new Image();img.onload=()=>{imageCache[i]=img;drawWheel('admin');};img.src=e.target.result;renderAdminNameList();};r.readAsDataURL(file);
+}
+function clearImage(i){images[i]=null;imageCache[i]=null;renderAdminNameList();drawWheel('admin');}
+function renderAdminNameList(){
+  const list=document.getElementById('adminNameList');
+  if(!names.length){list.innerHTML='<div class="empty-state">ยังไม่มีรายการ</div>';return;}
+  list.innerHTML=names.map((n,i)=>{
+    const c=colors[i]||'#ccc',hasImg=!!images[i];
+    return `<div class="name-item">
+      <div class="color-swatch" style="background:${c}"><input type="color" value="${c}" oninput="changeColor(${i},this.value);this.parentElement.style.background=this.value"></div>
+      <span class="name-text" title="${escHtml(n)}">${escHtml(n)}</span>
+      <div class="weight-wrap"><input class="weight-input" type="number" min="0" max="100" step="1" value="${weights[i]}" oninput="changeWeight(${i},this.value)" title="% โอกาส"><span class="weight-pct" id="wpct_${i}">%</span></div>
+      <label class="img-btn ${hasImg?'has-img':''}" title="${hasImg?'เปลี่ยนรูป':'อัพโหลดรูป'}">${hasImg?`<img src="${images[i]}" style="width:100%;height:100%;object-fit:cover;">`:'📷'}<input type="file" accept="image/*" style="display:none" onchange="uploadImage(${i},this)"></label>
+      ${hasImg?`<button class="name-del" onclick="clearImage(${i})">✕</button>`:''}
+      <button class="name-del" onclick="removeName(${i})">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+// ── PALETTE ──
+function buildPaletteUI(){
+  const c=document.getElementById('palettePicker');c.innerHTML='';
+  PALETTES.forEach(pal=>{
+    const div=document.createElement('div');div.className='palette-preset';
+    div.innerHTML=pal.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('');
+    div.onclick=()=>{activePalette=[...pal];colors=names.map((_,i)=>pal[i%pal.length]);renderAdminNameList();drawWheel('admin');};
+    c.appendChild(div);
+  });
+}
+
+// ── ORDERS ──
+function renderOrders(){
+  const el=document.getElementById('adminOrdersList'),cnt=document.getElementById('orderCount');
+  try{
+    const orders=JSON.parse(localStorage.getItem('justshrt_orders')||'[]');
+    cnt.textContent=`รวม ${orders.length} คำสั่ง`;
+    if(!orders.length){el.innerHTML='<div class="empty-state">ยังไม่มีคำสั่ง</div>';return;}
+    el.innerHTML=[...orders].reverse().map(o=>`<div class="order-card"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-family:'Bebas Neue',cursive;color:#4fc3f7;letter-spacing:2px;font-size:0.88rem;">${escHtml(o.name)}</span><span style="font-size:0.66rem;color:var(--muted);">${o.time}</span></div><div style="font-size:0.76rem;color:#90caf9;">📞 ${escHtml(o.phone)}</div><div style="font-size:0.73rem;color:var(--muted);">🎁 ${escHtml(o.item)}${o.note?' · '+escHtml(o.note):''}</div></div>`).join('');
+  }catch(e){el.innerHTML='<div class="empty-state">โหลดไม่ได้</div>';}
+}
+function clearOrders(){if(!confirm('ลบคำสั่งทั้งหมด?'))return;localStorage.removeItem('justshrt_orders');renderOrders();}
+function renderSpinResults(){
+  const el=document.getElementById('adminResults');
+  if(!spinResults.length){el.innerHTML='<div class="empty-state">ยังไม่มีผล</div>';return;}
+  el.innerHTML=[...spinResults].reverse().map((r,i)=>`<div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border-radius:8px;padding:7px 10px;"><div style="width:9px;height:9px;border-radius:50%;background:${r.color};flex-shrink:0;"></div><span style="font-size:0.83rem;color:var(--ink2);font-weight:600;">${escHtml(r.name)}</span><span style="font-size:0.66rem;color:var(--muted);margin-left:auto;">#${spinResults.length-i}</span></div>`).join('');
+}
+
+// ── CONFETTI ──
+function launchConfetti(mc){
+  const c=document.getElementById('confetti');c.width=window.innerWidth;c.height=window.innerHeight;
+  const cx=c.getContext('2d'),cols=[mc,'#4fc3f7','#1565c0','#90caf9','#38bdf8'];
+  const ps=Array.from({length:90},()=>({x:Math.random()*c.width,y:-10,w:4+Math.random()*8,h:4+Math.random()*8,col:cols[Math.floor(Math.random()*cols.length)],sp:3+Math.random()*5,spin:(Math.random()-.5)*.14,ang:Math.random()*Math.PI*2,dr:(Math.random()-.5)*1.5}));
+  let f=0;(function draw(){cx.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.y+=p.sp;p.x+=p.dr;p.ang+=p.spin;cx.save();cx.translate(p.x,p.y);cx.rotate(p.ang);cx.fillStyle=p.col;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();});if(++f<100)requestAnimationFrame(draw);else cx.clearRect(0,0,c.width,c.height);})();
+}
+
+// ── INIT ──
+loadWheelData();
+if(names.length===0)loadDefault();
+initUserCanvas();
+drawWheel('user');
+</script>
+</body>
+</html>
