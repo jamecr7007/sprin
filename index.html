@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>JUSTSHRT — Wheel of Fortune</title>
+<link rel="preload" href="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" as="script">
+<link rel="preload" href="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" as="script">
+<link rel="dns-prefetch" href="//www.gstatic.com">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app" crossorigin>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
@@ -477,7 +482,7 @@ function hideLoader(){
 
 function loadWheelData(){
   // Fallback: hide loader after 5s no matter what
-  setTimeout(hideLoader, 5000);
+  setTimeout(hideLoader, 1500);
 
   db.ref('wheelConfig').on('value', snap => {
     hideLoader();
@@ -861,11 +866,14 @@ const loadTimeout = setTimeout(()=>{
   initUserCanvas();
   drawWheel('user');
   hideLoading();
-}, 4000);
+}, 1500);
 
 // Load from Firebase
 document.getElementById('loadingMsg').textContent='กำลังเชื่อมต่อ...';
-db.ref('wheelConfig').once('value').then(snap=>{
+// Race Firebase vs 3s timeout
+const firebasePromise = db.ref('wheelConfig').once('value');
+const timeoutPromise = new Promise((_,reject) => setTimeout(()=>reject(new Error('timeout')), 3000));
+Promise.race([firebasePromise, timeoutPromise]).then(snap=>{
   clearTimeout(loadTimeout);
   const d=snap.val();
   if(d){
