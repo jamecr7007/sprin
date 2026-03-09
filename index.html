@@ -2,11 +2,23 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="x-dns-prefetch-control" content="on">
-<link rel="dns-prefetch" href="//fonts.googleapis.com">
-<link rel="dns-prefetch" href="//fonts.gstatic.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JUSTSHRT — Wheel of Fortune</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",
+    authDomain: "justshrit.firebaseapp.com",
+    databaseURL: "https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "justshrit",
+    storageBucket: "justshrit.firebasestorage.app",
+    messagingSenderId: "266485761926",
+    appId: "1:266485761926:web:6b435c2232352913828e07"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
@@ -390,7 +402,7 @@ function checkAdminPass(){
     renderAdminNameList();
     buildPaletteUI();
     renderOrders();
-    setInterval(renderOrders,5000);
+    // Firebase realtime - no polling needed
   }else{
     document.getElementById('loginError').style.display='block';
     document.getElementById('adminPassInput').value='';
@@ -404,29 +416,36 @@ function goUserPage(){showPage('pageUser');drawWheel('user');}
 
 // ── DATA ──
 function loadWheelData(){
-  try{
-    const d=JSON.parse(localStorage.getItem('justshrt_wheel')||'null');
+  // Listen real-time from Firebase
+  db.ref('wheelConfig').on('value', snap => {
+    const d = snap.val();
     if(d){
       names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
       spinLimitEnabled=d.spinLimitEnabled||false;
       spinLimitMax=d.spinLimitMax||1;
       preloadImages();
-      // sync toggle UI if admin page visible
+      drawWheel('user');
+      updateUserSpinStatus();
+      // sync admin UI if open
       const tog=document.getElementById('unlimitedToggle');
       if(tog){ tog.checked=!spinLimitEnabled; updateToggleUI(); }
       if(document.getElementById('limitVal')) document.getElementById('limitVal').textContent=spinLimitMax;
       if(document.getElementById('limitDisplay')) document.getElementById('limitDisplay').textContent=spinLimitMax;
+      renderAdminNameList();
+      drawWheel('admin');
     }
-  }catch(e){}
+  });
 }
 function publishWheel(){
-  localStorage.setItem('justshrt_wheel',JSON.stringify({names,colors,images,weights,spinLimitEnabled,spinLimitMax}));
-  preloadImages(); drawWheel('user');
-  // reset all user spin counts when admin publishes
-  localStorage.removeItem('justshrt_user_spins');
-  userSpinCount=0;
-  const m=document.getElementById('saveMsg'); m.style.display='block';
-  setTimeout(()=>m.style.display='none',3000);
+  db.ref('wheelConfig').set({names,colors,images,weights,spinLimitEnabled,spinLimitMax})
+    .then(()=>{
+      // reset spin counts in Firebase
+      db.ref('spinCounts').remove();
+      userSpinCount=0;
+      const m=document.getElementById('saveMsg'); m.style.display='block';
+      setTimeout(()=>m.style.display='none',3000);
+    })
+    .catch(e=>alert('บันทึกไม่สำเร็จ: '+e.message));
 }
 function preloadImages(){
   imageCache=images.map(src=>{if(!src)return null;const img=new Image();img.src=src;return img;});
@@ -436,18 +455,13 @@ function preloadImages(){
 const SHEETS_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
 function saveOrder(o){
-  // 1. บันทึกลง localStorage (backup)
-  try{
-    const orders=JSON.parse(localStorage.getItem('justshrt_orders')||'[]');
-    orders.push(o);
-    localStorage.setItem('justshrt_orders',JSON.stringify(orders));
-  }catch(e){}
+  // บันทึกลง Firebase
+  db.ref('orders').push(o);
 
-  // 2. ส่งไป Google Sheets (ถ้ามี URL)
+  // ส่งไป Google Sheets ด้วย (ถ้ามี URL)
   if(SHEETS_URL && SHEETS_URL !== 'YOUR_APPS_SCRIPT_URL_HERE'){
     fetch(SHEETS_URL, {
-      method:'POST',
-      mode:'no-cors',
+      method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(o)
     }).catch(()=>{});
@@ -548,22 +562,23 @@ function doSpin(target,onWin){
 function userSpin(){
   // check spin limit
   if(spinLimitEnabled){
-    // load user's spin count from storage (keyed by phone)
-    const key='justshrt_spins_'+(currentUser.phone||'guest');
-    userSpinCount=parseInt(localStorage.getItem(key)||'0');
-    if(userSpinCount>=spinLimitMax){
-      showSpinLimitMsg();
-      return;
-    }
+    const key=currentUser.phone||'guest';
+    db.ref('spinCounts/'+key).once('value').then(snap=>{
+      userSpinCount=snap.val()||0;
+      if(userSpinCount>=spinLimitMax){ showSpinLimitMsg(); return; }
+      doSpin('user',idx=>{
+        if(spinLimitEnabled){
+          db.ref('spinCounts/'+key).set(userSpinCount+1);
+          userSpinCount++;
+          updateUserSpinStatus();
+        }
+        document.getElementById('claimBtn').style.display='block';
+        showWin(idx,true);
+      });
+    });
+    return;
   }
   doSpin('user',idx=>{
-    // increment spin count
-    if(spinLimitEnabled){
-      const key='justshrt_spins_'+(currentUser.phone||'guest');
-      userSpinCount++;
-      localStorage.setItem(key,userSpinCount);
-      updateUserSpinStatus();
-    }
     document.getElementById('claimBtn').style.display='block';
     showWin(idx,true);
   });
@@ -621,49 +636,32 @@ function updateToggleUI(){
 function refreshSpinStats(){
   const wrap=document.getElementById('spinStatsWrap');
   if(!wrap)return;
-  // scan localStorage for all justshrt_spins_ keys
-  const stats=[];
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(k&&k.startsWith('justshrt_spins_')){
-      const phone=k.replace('justshrt_spins_','');
-      const used=parseInt(localStorage.getItem(k)||'0');
-      stats.push({phone,used});
-    }
-  }
-  if(!stats.length){
-    wrap.innerHTML='<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:8px;">ยังไม่มีข้อมูล</div>';
-    return;
-  }
-  stats.sort((a,b)=>b.used-a.used);
-  wrap.innerHTML=stats.map(s=>{
-    const pct=Math.min(100,Math.round((s.used/spinLimitMax)*100));
-    const over=s.used>=spinLimitMax;
-    return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(79,195,247,0.06);">
-      <div style="font-size:0.72rem;color:var(--ink2);flex:1;">📞 ${escHtml(s.phone)}</div>
-      <div style="font-size:0.7rem;color:${over?'#ef5350':'#4fc3f7'};font-weight:700;white-space:nowrap;">${s.used}/${spinLimitMax}</div>
-      <div style="width:40px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;">
-        <div style="width:${pct}%;height:100%;background:${over?'#ef5350':'#4fc3f7'};border-radius:3px;"></div>
-      </div>
-    </div>`;
-  }).join('');
+  db.ref('spinCounts').once('value').then(snap=>{
+    const data=snap.val();
+    if(!data){wrap.innerHTML='<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:8px;">ยังไม่มีข้อมูล</div>';return;}
+    const stats=Object.entries(data).map(([phone,used])=>({phone,used}));
+    stats.sort((a,b)=>b.used-a.used);
+    wrap.innerHTML=stats.map(s=>{
+      const pct=Math.min(100,Math.round((s.used/spinLimitMax)*100));
+      const over=s.used>=spinLimitMax;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(79,195,247,0.06);">
+        <div style="font-size:0.72rem;color:var(--ink2);flex:1;">📞 ${escHtml(s.phone)}</div>
+        <div style="font-size:0.7rem;color:${over?'#ef5350':'#4fc3f7'};font-weight:700;white-space:nowrap;">${s.used}/${spinLimitMax}</div>
+        <div style="width:40px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:${over?'#ef5350':'#4fc3f7'};border-radius:3px;"></div>
+        </div>
+      </div>`;
+    }).join('');
+  });
 }
 
 function resetAllSpins(){
   if(!confirm('รีเซ็ตสปินทุกคน?\nทุกคนจะหมุนได้ใหม่'))return;
-  const keys=[];
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(k&&k.startsWith('justshrt_spins_'))keys.push(k);
-  }
-  keys.forEach(k=>localStorage.removeItem(k));
-  userSpinCount=0;
-  refreshSpinStats();
-  // reset user spin btn if on user page
-  const btn=document.getElementById('userSpinBtn');
-  if(btn){btn.disabled=false;btn.textContent='▶ SPIN THE WHEEL';}
-  const st=document.getElementById('userSpinStatus');
-  if(st)updateUserSpinStatus();
+  db.ref('spinCounts').remove().then(()=>{
+    userSpinCount=0;
+    refreshSpinStats();
+    updateUserSpinStatus();
+  });
 }
 
 function changeLimit(d){
@@ -677,18 +675,20 @@ function updateUserSpinStatus(){
   const el=document.getElementById('userSpinStatus');
   if(!el)return;
   if(!spinLimitEnabled){el.textContent='';return;}
-  const key='justshrt_spins_'+(currentUser.phone||'guest');
-  const used=parseInt(localStorage.getItem(key)||'0');
-  const left=spinLimitMax-used;
-  if(left<=0){
-    el.innerHTML='<span style="color:#ef5350;">❌ คุณใช้สปินครบแล้ว</span>';
-    document.getElementById('userSpinBtn').disabled=true;
-    document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
-  }else{
-    el.innerHTML=`เหลือสปิน <span style="color:#4fc3f7;font-weight:700;">${left}/${spinLimitMax}</span> ครั้ง`;
-    document.getElementById('userSpinBtn').disabled=false;
-    document.getElementById('userSpinBtn').textContent='▶ SPIN THE WHEEL';
-  }
+  const key=currentUser.phone||'guest';
+  db.ref('spinCounts/'+key).once('value').then(snap=>{
+    const used=snap.val()||0;
+    const left=spinLimitMax-used;
+    if(left<=0){
+      el.innerHTML='<span style="color:#ef5350;">❌ คุณใช้สปินครบแล้ว</span>';
+      document.getElementById('userSpinBtn').disabled=true;
+      document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
+    }else{
+      el.innerHTML=`เหลือสปิน <span style="color:#4fc3f7;font-weight:700;">${left}/${spinLimitMax}</span> ครั้ง`;
+      document.getElementById('userSpinBtn').disabled=false;
+      document.getElementById('userSpinBtn').textContent='▶ SPIN THE WHEEL';
+    }
+  });
 }
 function showSpinLimitMsg(){
   const el=document.getElementById('userSpinStatus');
@@ -743,14 +743,16 @@ function buildPaletteUI(){
 // ── ORDERS ──
 function renderOrders(){
   const el=document.getElementById('adminOrdersList'),cnt=document.getElementById('orderCount');
-  try{
-    const orders=JSON.parse(localStorage.getItem('justshrt_orders')||'[]');
+  if(!el)return;
+  db.ref('orders').on('value', snap=>{
+    const data=snap.val();
+    const orders=data?Object.values(data):[];
     cnt.textContent=`รวม ${orders.length} คำสั่ง`;
     if(!orders.length){el.innerHTML='<div class="empty-state">ยังไม่มีคำสั่ง</div>';return;}
     el.innerHTML=[...orders].reverse().map(o=>`<div class="order-card"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-family:'Bebas Neue',cursive;color:#4fc3f7;letter-spacing:2px;font-size:0.88rem;">${escHtml(o.name)}</span><span style="font-size:0.66rem;color:var(--muted);">${o.time}</span></div><div style="font-size:0.76rem;color:#90caf9;">📞 ${escHtml(o.phone)}</div><div style="font-size:0.73rem;color:var(--muted);">🎁 ${escHtml(o.item)}${o.note?' · '+escHtml(o.note):''}</div></div>`).join('');
-  }catch(e){el.innerHTML='<div class="empty-state">โหลดไม่ได้</div>';}
+  });
 }
-function clearOrders(){if(!confirm('ลบคำสั่งทั้งหมด?'))return;localStorage.removeItem('justshrt_orders');renderOrders();}
+function clearOrders(){if(!confirm('ลบคำสั่งทั้งหมด?'))return;db.ref('orders').remove();}
 function renderSpinResults(){
   const el=document.getElementById('adminResults');
   if(!spinResults.length){el.innerHTML='<div class="empty-state">ยังไม่มีผล</div>';return;}
