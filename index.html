@@ -122,10 +122,40 @@
   .confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:3000; }
   @keyframes popIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
   @media(max-width:480px){.logo-big{font-size:3rem;}.register-box{padding:28px 20px;}.user-wrap{padding:0;}}
+
+  /* ── LOADING SCREEN ── */
+  #loadingScreen {
+    position:fixed; inset:0; background:#0d1b2a; z-index:9999;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+    transition: opacity 0.5s ease;
+  }
+  #loadingScreen.hide { opacity:0; pointer-events:none; }
+  .loading-logo { font-family:'Bebas Neue',Impact,cursive; font-size:3.5rem; color:#4fc3f7; letter-spacing:6px; text-shadow:0 0 30px rgba(79,195,247,0.6); }
+  .loading-sub { font-size:0.7rem; letter-spacing:4px; color:#5a88aa; margin-top:-14px; }
+  .loading-spinner { width:40px; height:40px; border:3px solid rgba(79,195,247,0.15); border-top-color:#4fc3f7; border-radius:50%; animation:spin 0.8s linear infinite; }
+  .loading-text { font-size:0.78rem; color:#5a88aa; letter-spacing:1px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-bar-wrap { width:160px; height:3px; background:rgba(79,195,247,0.1); border-radius:3px; overflow:hidden; }
+  .loading-bar { height:100%; width:0%; background:linear-gradient(to right,#1565c0,#4fc3f7); border-radius:3px; transition:width 0.3s ease; animation: loadprogress 2.5s ease forwards; }
+  @keyframes loadprogress { 0%{width:0%} 40%{width:60%} 80%{width:85%} 100%{width:95%} }
 </style>
 </head>
 <body>
 
+<!-- ══ LOADING SCREEN ══ -->
+<div id="loadingScreen" style="position:fixed;inset:0;background:#0d1b2a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;">
+  <div style="font-family:'Impact',cursive;font-size:3.5rem;color:#4fc3f7;letter-spacing:6px;text-shadow:0 0 30px rgba(79,195,247,0.5);margin-bottom:8px;">JUSTSHRT</div>
+  <div style="font-size:0.65rem;letter-spacing:4px;color:#5a88aa;margin-bottom:40px;">VINTAGE &amp; SECONDHAND</div>
+  <div style="display:flex;gap:8px;">
+    <div class="dot-load" style="width:10px;height:10px;border-radius:50%;background:#4fc3f7;animation:dotPulse 1.2s ease-in-out infinite;"></div>
+    <div class="dot-load" style="width:10px;height:10px;border-radius:50%;background:#4fc3f7;animation:dotPulse 1.2s ease-in-out 0.2s infinite;"></div>
+    <div class="dot-load" style="width:10px;height:10px;border-radius:50%;background:#4fc3f7;animation:dotPulse 1.2s ease-in-out 0.4s infinite;"></div>
+  </div>
+  <div id="loadingMsg" style="font-size:0.75rem;color:#5a88aa;margin-top:16px;font-family:'Tahoma',sans-serif;">กำลังโหลด...</div>
+</div>
+<style>
+@keyframes dotPulse{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
+</style>
 
 <div id="pageRegister" class="page active">
   <div class="register-box">
@@ -415,25 +445,34 @@ function adminLogout(){showPage('pageUser');drawWheel('user');}
 function goUserPage(){showPage('pageUser');drawWheel('user');}
 
 // ── DATA ──
+function hideLoader(){
+  const el=document.getElementById('loadingScreen');
+  if(el){el.style.opacity='0';el.style.transition='opacity 0.4s';setTimeout(()=>el.style.display='none',400);}
+}
+
 function loadWheelData(){
-  // Listen real-time from Firebase
+  // Fallback: hide loader after 5s no matter what
+  setTimeout(hideLoader, 5000);
+
   db.ref('wheelConfig').on('value', snap => {
+    hideLoader();
     const d = snap.val();
-    if(d){
-      names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
-      spinLimitEnabled=d.spinLimitEnabled||false;
-      spinLimitMax=d.spinLimitMax||1;
-      preloadImages();
-      drawWheel('user');
-      updateUserSpinStatus();
-      // sync admin UI if open
-      const tog=document.getElementById('unlimitedToggle');
-      if(tog){ tog.checked=!spinLimitEnabled; updateToggleUI(); }
-      if(document.getElementById('limitVal')) document.getElementById('limitVal').textContent=spinLimitMax;
-      if(document.getElementById('limitDisplay')) document.getElementById('limitDisplay').textContent=spinLimitMax;
-      renderAdminNameList();
-      drawWheel('admin');
-    }
+    if(!d){ hideLoader(); return; }
+    names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
+    spinLimitEnabled=d.spinLimitEnabled||false;
+    spinLimitMax=d.spinLimitMax||1;
+    preloadImages();
+    drawWheel('user');
+    updateUserSpinStatus();
+    const tog=document.getElementById('unlimitedToggle');
+    if(tog){ tog.checked=!spinLimitEnabled; updateToggleUI(); }
+    if(document.getElementById('limitVal')) document.getElementById('limitVal').textContent=spinLimitMax;
+    if(document.getElementById('limitDisplay')) document.getElementById('limitDisplay').textContent=spinLimitMax;
+    renderAdminNameList();
+    drawWheel('admin');
+  }, err => {
+    console.error('Firebase:', err);
+    hideLoader();
   });
 }
 function publishWheel(){
@@ -710,7 +749,25 @@ function changeWeight(i,v){weights[i]=Math.min(100,Math.max(0,parseFloat(v)||0))
 function changeColor(i,c){colors[i]=c;drawWheel('admin');}
 function uploadImage(i,inp){
   const file=inp.files[0];if(!file)return;
-  const r=new FileReader();r.onload=e=>{images[i]=e.target.result;const img=new Image();img.onload=()=>{imageCache[i]=img;drawWheel('admin');};img.src=e.target.result;renderAdminNameList();};r.readAsDataURL(file);
+  const reader=new FileReader();
+  reader.onload=e=>{
+    // Resize & compress before storing
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=400;
+      const scale=Math.min(MAX/img.width, MAX/img.height, 1);
+      const canvas=document.createElement('canvas');
+      canvas.width=img.width*scale; canvas.height=img.height*scale;
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      const compressed=canvas.toDataURL('image/jpeg',0.7);
+      images[i]=compressed;
+      imageCache[i]=img;
+      drawWheel('admin');
+      renderAdminNameList();
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 function clearImage(i){images[i]=null;imageCache[i]=null;renderAdminNameList();drawWheel('admin');}
 function renderAdminNameList(){
@@ -768,10 +825,45 @@ function launchConfetti(mc){
 }
 
 // ── INIT ──
-loadWheelData();
-if(names.length===0)loadDefault();
-initUserCanvas();
-drawWheel('user');
+function hideLoading(){
+  const s=document.getElementById('loadingScreen');
+  if(s){ s.style.opacity='0'; s.style.transition='opacity 0.4s'; setTimeout(()=>s.style.display='none',400); }
+}
+
+// Timeout fallback - if Firebase takes too long, show app anyway
+const loadTimeout = setTimeout(()=>{
+  if(names.length===0) loadDefault();
+  initUserCanvas();
+  drawWheel('user');
+  hideLoading();
+}, 4000);
+
+// Load from Firebase
+document.getElementById('loadingMsg').textContent='กำลังเชื่อมต่อ...';
+db.ref('wheelConfig').once('value').then(snap=>{
+  clearTimeout(loadTimeout);
+  const d=snap.val();
+  if(d){
+    names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
+    spinLimitEnabled=d.spinLimitEnabled||false;
+    spinLimitMax=d.spinLimitMax||1;
+    preloadImages();
+  } else {
+    loadDefault();
+  }
+  initUserCanvas();
+  drawWheel('user');
+  hideLoading();
+  // Then subscribe realtime
+  loadWheelData();
+}).catch(err=>{
+  clearTimeout(loadTimeout);
+  console.error('Firebase error:',err);
+  loadDefault();
+  initUserCanvas();
+  drawWheel('user');
+  hideLoading();
+});
 </script>
 </body>
 </html>
