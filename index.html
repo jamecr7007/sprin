@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>JUSTSHRT — Wheel of Fortune</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -46,8 +46,8 @@
   body::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse at 15% 25%,rgba(79,195,247,0.06) 0%,transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(56,189,248,0.05) 0%,transparent 50%); pointer-events:none; z-index:0; }
   .page { display:none; min-height:100vh; position:relative; z-index:1; }
   .page.active { display:flex; flex-direction:column; }
-  #pageRegister { align-items:center; justify-content:center; padding:20px; }
-  #pageUser { align-items:center; padding:16px; }
+  #pageRegister { align-items:center; justify-content:center; padding:16px; min-height:100dvh; }
+  #pageUser { align-items:center; padding:16px; padding-bottom:env(safe-area-inset-bottom,16px); }
   #pageAdmin { align-items:stretch; padding:0; }
   .input-field { background:var(--surface2); border:1px solid rgba(79,195,247,0.15); border-radius:10px; padding:10px 14px; color:var(--ink); font-family:'Kanit',sans-serif; font-size:0.9rem; outline:none; transition:border-color 0.2s; display:block; width:100%; }
   .input-field:focus { border-color:#4fc3f7; box-shadow:0 0 0 2px rgba(79,195,247,0.1); }
@@ -121,7 +121,32 @@
   .login-box p { font-size:0.78rem; color:var(--muted); margin-bottom:18px; font-weight:300; }
   .confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:3000; }
   @keyframes popIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
-  @media(max-width:480px){.logo-big{font-size:3rem;}.register-box{padding:28px 20px;}.user-wrap{padding:0;}}
+  /* ── MOBILE OPTIMIZED ── */
+  @media(max-width:480px){
+    /* Register */
+    .logo-big{font-size:2.6rem;}
+    .register-box{padding:28px 18px;border-radius:16px;}
+
+    /* User wheel */
+    .user-wrap{padding:0;}
+    .user-header{padding:8px 12px;border-radius:10px;margin-bottom:12px;}
+    .brand-name{font-size:1.4rem;}
+    .user-chip{font-size:0.68rem;padding:3px 10px;}
+    .admin-link{font-size:0.65rem;padding:4px 8px;}
+    .spin-btn{font-size:1.1rem;padding:13px;border-radius:10px;}
+    .wheel-center{width:58px;height:58px;}
+    .wheel-center div{font-size:0.68rem;}
+
+    /* Modals */
+    .modal{padding:24px 18px;border-radius:16px;}
+    .input-field{padding:9px 12px;font-size:0.85rem;}
+    .btn{padding:9px 14px;font-size:0.82rem;}
+  }
+
+  /* Prevent zoom on input focus iOS */
+  @media(max-width:480px){
+    input, select, textarea { font-size:16px !important; }
+  }
 
   /* ── LOADING SCREEN ── */
   #loadingScreen {
