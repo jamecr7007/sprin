@@ -1,103 +1,124 @@
-:root{--bg:#0d1b2a;--surface:#132236;--surface2:#1a2e44;--ink:#e8f4fd;--ink2:#a8c8e8;--muted:#5a88aa}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-height:100vh;overflow-x:hidden}
-.page{display:none;min-height:100vh;position:relative;z-index:1}
-.page.active{display:flex;flex-direction:column}
-#pageRegister{align-items:center;justify-content:center;padding:16px;min-height:100dvh}
-#pageUser{align-items:center;padding:16px;padding-bottom:env(safe-area-inset-bottom,16px)}
-#pageAdmin{align-items:stretch;padding:0}
-.input-field{background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:10px 14px;color:var(--ink);font-family:'Kanit',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;display:block;width:100%}
-.input-field:focus{border-color:#4fc3f7;box-shadow:0 0 0 2px rgba(79,195,247,.1)}
-.input-field::placeholder{color:var(--muted)}
-.btn{padding:10px 16px;border-radius:10px;border:none;font-family:'Kanit',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .15s}
-.btn-ink{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#90caf9;border:1px solid rgba(79,195,247,.2)}
-.btn-ink:hover{background:linear-gradient(135deg,#1976d2,#1565c0);transform:translateY(-1px)}
-.btn-ghost{background:var(--surface2);color:var(--ink2);border:1px solid rgba(79,195,247,.15)}
-.btn-ghost:hover{border-color:rgba(79,195,247,.4)}
-.btn-red{background:rgba(198,40,40,.12);color:#ef9a9a;border:1px solid rgba(198,40,40,.25)}
-.btn-red:hover{background:rgba(198,40,40,.22)}
-.panel{background:var(--surface);border:1px solid rgba(79,195,247,.12);border-radius:14px;padding:18px;box-shadow:0 2px 16px rgba(0,0,0,.2)}
-.panel-title{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.panel-title .line{flex:1;height:1px;background:linear-gradient(to right,rgba(79,195,247,.3),transparent)}
-.modal-overlay{position:fixed;inset:0;background:rgba(5,10,20,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
-.modal-overlay.show{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border:2px solid rgba(79,195,247,.3);border-radius:20px;padding:36px 28px;text-align:center;max-width:360px;width:90%;transform:scale(.85);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(79,195,247,.1),0 30px 80px rgba(0,0,0,.6)}
-.modal-overlay.show .modal{transform:scale(1)}
-.register-box{background:var(--surface);border:2px solid rgba(79,195,247,.2);border-radius:24px;padding:44px 36px;text-align:center;max-width:380px;width:100%;box-shadow:0 0 60px rgba(79,195,247,.08),0 20px 60px rgba(0,0,0,.5)}
-.logo-big{font-family:'Bebas Neue',cursive;font-size:4rem;color:#4fc3f7;letter-spacing:6px;text-shadow:0 0 30px rgba(79,195,247,.5);line-height:1;margin-bottom:4px}
-.logo-sub{font-size:.68rem;letter-spacing:4px;color:var(--muted);margin-bottom:32px}
-.user-wrap{max-width:540px;width:100%}
-.user-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:linear-gradient(135deg,#0a3060,#0d1b2a);border:1px solid rgba(79,195,247,.2);border-radius:14px;margin-bottom:18px}
-.brand-name{font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;letter-spacing:4px;line-height:1}
-.brand-sub{font-size:.56rem;letter-spacing:3px;color:rgba(168,200,232,.45);font-weight:300}
-.user-chip{background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.2);border-radius:20px;padding:4px 12px;font-size:.75rem;color:#4fc3f7}
-.admin-link{background:none;border:1px solid rgba(79,195,247,.2);color:var(--muted);font-family:'Kanit',sans-serif;font-size:.72rem;padding:5px 10px;border-radius:8px;cursor:pointer;transition:all .15s}
-.admin-link:hover{color:#4fc3f7;border-color:rgba(79,195,247,.4)}
-.wheel-section{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
-.wheel-wrapper{position:relative}
-.wheel-canvas{display:block;border-radius:50%;box-shadow:0 0 0 6px #1a2e44,0 0 0 10px rgba(79,195,247,.2),0 0 0 14px rgba(79,195,247,.06),0 16px 60px rgba(0,0,0,.5)}
-.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:50%;z-index:10;display:flex;align-items:center;justify-content:center;cursor:pointer;border:3px solid rgba(79,195,247,.5);box-shadow:0 0 24px rgba(79,195,247,.35);transition:transform .15s}
-.wheel-center:hover{transform:translate(-50%,-50%) scale(1.08)}
-.spin-btn{padding:14px;background:linear-gradient(135deg,#1565c0,#0d47a1);border:1px solid rgba(79,195,247,.3);border-radius:12px;font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:4px;color:#90caf9;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(21,101,192,.4);width:min(500px,92vw)}
-.spin-btn:hover{transform:translateY(-2px)}
-.spin-btn:disabled{background:var(--surface2);color:var(--muted);border-color:transparent;transform:none;box-shadow:none;cursor:not-allowed}
-.admin-container{max-width:1200px;margin:0 auto;padding:20px;width:100%}
-.admin-header{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;background:linear-gradient(135deg,#0a3060,#0d1b2a);border:1px solid rgba(79,195,247,.2);border-radius:14px;margin-bottom:20px}
-.admin-grid{display:grid;grid-template-columns:290px 1fr 290px;gap:18px;align-items:start}
-@media(max-width:960px){.admin-grid{grid-template-columns:1fr 1fr}.admin-center{order:-1;grid-column:1/-1}}
-@media(max-width:560px){.admin-grid{grid-template-columns:1fr}}
-.name-list{max-height:290px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:5px}
-.name-list::-webkit-scrollbar{width:3px}
-.name-item{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid rgba(79,195,247,.08);border-radius:9px;padding:6px 8px}
-.color-swatch{width:20px;height:20px;border-radius:5px;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer;border:2px solid rgba(0,0,0,.15)}
-.color-swatch input[type=color]{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);opacity:0;cursor:pointer}
-.name-text{flex:1;font-size:.82rem;font-weight:500;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75px}
-.weight-wrap{display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
-.weight-input{width:40px;background:var(--surface2);border:1px solid rgba(79,195,247,.2);border-radius:5px;color:#4fc3f7;font-family:'Kanit',sans-serif;font-size:.7rem;font-weight:600;text-align:center;padding:2px 3px;outline:none}
-.weight-pct{font-size:.57rem;color:var(--muted)}
-.img-btn{width:28px;height:28px;border-radius:6px;background:var(--surface2);border:1.5px dashed rgba(79,195,247,.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;cursor:pointer;flex-shrink:0;overflow:hidden;transition:all .15s}
-.img-btn.has-img{border-style:solid;border-color:rgba(79,195,247,.4);padding:0}
-.name-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:0 1px;line-height:1;flex-shrink:0}
-.name-del:hover{color:#ef5350}
-.palette-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.palette-preset{display:flex;border-radius:7px;overflow:hidden;cursor:pointer;border:2px solid transparent;height:22px;transition:all .15s}
-.palette-preset:hover{transform:scale(1.08);border-color:var(--ink)}
-.palette-swatch{width:14px;height:100%}
-.orders-list{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
-.order-card{background:var(--surface2);border-radius:10px;padding:10px 12px;border:1px solid rgba(79,195,247,.1)}
-.empty-state{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;font-weight:300}
-.admin-login-overlay{position:fixed;inset:0;background:rgba(5,10,20,.95);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;pointer-events:none;transition:opacity .3s}
-.admin-login-overlay.show{opacity:1;pointer-events:all}
-.login-box{background:var(--surface);border:2px solid rgba(79,195,247,.25);border-radius:22px;padding:40px 32px;text-align:center;max-width:340px;width:90%;box-shadow:0 0 50px rgba(79,195,247,.1),0 20px 60px rgba(0,0,0,.5)}
-.login-box h3{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:4px;color:#4fc3f7;margin-bottom:6px}
-.login-box p{font-size:.78rem;color:var(--muted);margin-bottom:18px;font-weight:300}
-.confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:3000}
+:root {
+    /* ปรับโทนสีให้ซอฟต์ลง ลดความสดของสีฟ้าลงนิดหน่อย */
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #334155;
+    --ink: #f8fafc;
+    --ink2: #cbd5e1;
+    --muted: #94a3b8;
+    --accent: #38bdf8; /* สีฟ้าที่ดู Modern ขึ้น */
+}
 
-#loadingScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease}
-#loadingScreen.hide{opacity:0;pointer-events:none}
-.ld-logo{font-family:'Bebas Neue',Impact,cursive;font-size:3.5rem;color:#4fc3f7;letter-spacing:8px;text-shadow:0 0 30px rgba(79,195,247,.5)}
-.ld-sub{font-size:.62rem;letter-spacing:5px;color:var(--muted);margin-top:-16px}
-.ld-spinner-wrap{position:relative;width:80px;height:80px;margin-top:10px}
-.ld-spinner{width:80px;height:80px;border-radius:50%;border:3px solid rgba(79,195,247,.1);border-top-color:#4fc3f7;border-right-color:#1565c0;animation:ldSpin .9s linear infinite}
-.ld-spinner-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;background:#4fc3f7;border-radius:50%;box-shadow:0 0 10px rgba(79,195,247,.8)}
-@keyframes ldSpin{to{transform:rotate(360deg)}}
-.ld-txt{font-size:.7rem;color:var(--muted);letter-spacing:2px;margin-top:4px}
-@keyframes popIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
-@keyframes dotPulse{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-#loadingScreen{position:fixed;inset:0;background:#0d1b2a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease}
-#loadingScreen.hide{opacity:0;pointer-events:none}
-@media(max-width:480px){
-.logo-big{font-size:2.6rem}
-.register-box{padding:28px 18px;border-radius:16px}
-.user-wrap{padding:0}
-.user-header{padding:8px 12px;border-radius:10px;margin-bottom:12px}
-.brand-name{font-size:1.4rem}
-.user-chip{font-size:.68rem;padding:3px 10px}
-.admin-link{font-size:.65rem;padding:4px 8px}
-.spin-btn{font-size:1.1rem;padding:13px;border-radius:10px}
-.wheel-center{width:58px;height:58px}
-.modal{padding:24px 18px;border-radius:16px}
-.input-field{padding:9px 12px;font-size:.85rem}
-.btn{padding:9px 14px;font-size:.82rem}
-input,select,textarea{font-size:16px !important}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Kanit', sans-serif;
+    line-height: 1.5;
+}
+
+/* --- Container ปรับให้ดูโปร่งขึ้น --- */
+.panel {
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.05); /* เส้นขอบบางลงมาก */
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* --- หัวข้อ ลดความแข็งกระด้าง --- */
+.panel-title {
+    font-family: 'Kanit', sans-serif; /* เปลี่ยนจาก Bebas เป็น Kanit ให้ดูซอฟต์ */
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+}
+
+/* --- Input Field ให้ดูเรียบเนียน (Minimal) --- */
+.input-field {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--surface2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--ink);
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: var(--accent);
+    background: rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+/* --- ปุ่มกดที่ดูละมุนขึ้น --- */
+.btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-ink {
+    background: var(--accent);
+    color: #0f172a;
+    border: none;
+}
+
+.btn-ink:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 15px -3px rgba(56, 189, 248, 0.3);
+}
+
+/* --- วงล้อ (Wheel) ปรับให้ดูเป็น Glassmorphism --- */
+.wheel-canvas {
+    border: 8px solid var(--surface);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.wheel-center {
+    width: 60px;
+    height: 60px;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+}
+
+/* --- Admin Grid ปรับให้ไม่อึดอัด --- */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 24px;
+    padding: 20px;
+}
+
+/* --- Name Item (แถบรายชื่อ) --- */
+.name-item {
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+/* --- ปรับแต่ง Modal --- */
+.modal {
+    background: var(--surface);
+    border: none;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+/* --- Scrollbar ให้ดูสะอาด --- */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--surface2);
+    border-radius: 10px;
 }
