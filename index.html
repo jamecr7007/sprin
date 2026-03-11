@@ -7,10 +7,11 @@
 <link rel="dns-prefetch" href="//www.gstatic.com">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div id="loadingScreen">
   <div class="ld-logo">JUSTSHRT</div>
   <div class="ld-sub">VINTAGE &amp; SECONDHAND</div>
@@ -20,6 +21,7 @@
   </div>
   <div class="ld-txt" id="ldTxt">กำลังโหลด...</div>
 </div>
+
 <div id="pageRegister" class="page active">
   <div class="register-box">
     <div class="logo-big">JUSTSHRT</div>
@@ -197,6 +199,7 @@
     </div>
   </div>
 </div>
+
 <div class="modal-overlay" id="successModal">
   <div class="modal">
     <div style="font-size:3rem;margin-bottom:12px;">✅</div>
@@ -205,7 +208,9 @@
     <button class="btn btn-ink" onclick="closeSuccess()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;">ตกลง</button>
   </div>
 </div>
+
 <canvas class="confetti-canvas" id="confetti"></canvas>
-<script defer src="script.js"></script>
+
+<script  src="script.js"defer></script>
 </body>
 </html>
