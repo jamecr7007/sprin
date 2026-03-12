@@ -337,7 +337,34 @@ input,select,textarea{font-size:16px !important}
 
 
 
-<script>/* © JUSTSHRT 2025. Proprietary and confidential. Unauthorized use prohibited. */
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+  // ส่วนตั้งค่า Firebase (Config)
+  const firebaseConfig = {
+    apiKey: "AIzaSy...", // **ห้ามลืมใส่ API Key ของคุณตรงนี้**
+    authDomain: "justshrit.firebaseapp.com",
+    databaseURL: "https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "justshrit",
+    storageBucket: "justshrit.appspot.com",
+    messagingSenderId: "367332768565",
+    appId: "1:367332768565:web:8e35f492983c51855e963b"
+  };
+
+  // เริ่มการทำงาน Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  var db = firebase.database(); 
+
+  /* © JUSTSHRT 2025. Proprietary and confidential. Unauthorized use prohibited. */
+  
+  // --- โค้ดเดิมของคุณที่เริ่มด้วย ADMIN_PASS ให้วางต่อตรงนี้ ---
+  const ADMIN_PASS='\x6a\x75\x73\x74\x73\x68\x69\x72\x74\x20\x6c\x61\x6f\x20\x61\x64\x6d\x69\x6e\x31\x32\x33';
+  const SHEETS_URL='https://script.google.com/macros/s/...';
+  // ... (โค้ดที่เหลือยาวๆ ของคุณ)
+</script>
 
 
 const ADMIN_PASS='\x6a\x75\x73\x74\x73\x68\x69\x72\x74\x20\x6c\x61\x6f\x20\x61\x64\x6d\x69\x6e\x31\x32\x33';
