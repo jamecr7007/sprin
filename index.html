@@ -225,9 +225,11 @@ let aCtx,aW,aH,aR,aAngle=0,aSpinning=false;
 function showPage(id){
   ['pageRegister','pageUser','pageAdmin'].forEach(p=>{
     const el=document.getElementById(p);
+    if(!el)return;
     el.classList.remove('active');el.style.display='none';
   });
   const el=document.getElementById(id);
+  if(!el)return;
   el.style.display='flex';el.classList.add('active');
 }
 function registerUser(){
@@ -314,7 +316,8 @@ function loadWheelData(){
     if(tog){tog.checked=!spinLimitEnabled;updateToggleUI();}
     if(document.getElementById('limitVal'))document.getElementById('limitVal').textContent=spinLimitMax;
     if(document.getElementById('limitDisplay'))document.getElementById('limitDisplay').textContent=spinLimitMax;
-    renderAdminNameList();drawWheel('admin');
+    if(document.getElementById('adminNameList'))renderAdminNameList();
+    if(document.getElementById('adminWheel'))drawWheel('admin');
   },err=>console.error('Firebase:',err));
 }
 function publishWheel(){
@@ -467,6 +470,7 @@ function closeSuccess(){document.getElementById('successModal').classList.remove
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function toggleUnlimited(){spinLimitEnabled=!document.getElementById('unlimitedToggle').checked;updateToggleUI();}
 function updateToggleUI(){
+  if(!document.getElementById('toggleSlider'))return;
   const on=spinLimitEnabled;
   const slider=document.getElementById('toggleSlider'),dot=document.getElementById('toggleDot');
   const row=document.getElementById('limitRow'),status=document.getElementById('spinLimitStatus');
@@ -557,7 +561,7 @@ function uploadImage(i,inp){
 }
 function clearImage(i){images[i]=null;imageCache[i]=null;renderAdminNameList();drawWheel('admin');}
 function renderAdminNameList(){
-  const list=document.getElementById('adminNameList');
+  const list=document.getElementById('adminNameList');if(!list)return;
   if(!names.length){list.innerHTML='<div class="empty-state">ยังไม่มีรายการ</div>';return;}
   list.innerHTML=names.map((n,i)=>{
     const c=colors[i]||'#ccc',hasImg=!!images[i];
@@ -572,7 +576,7 @@ function renderAdminNameList(){
   }).join('');
 }
 function buildPaletteUI(){
-  const c=document.getElementById('palettePicker');c.innerHTML='';
+  const c=document.getElementById('palettePicker');if(!c)return;c.innerHTML='';
   PALETTES.forEach(pal=>{
     const div=document.createElement('div');div.className='palette-preset';
     div.innerHTML=pal.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('');
