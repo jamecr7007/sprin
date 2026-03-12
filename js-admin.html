@@ -131,7 +131,7 @@ input,select,textarea{font-size:16px !important}
   <div class="ld-txt" id="ldTxt">กำลังโหลด...</div>
 </div>
 
-<div id="pageRegister" class="page active">
+<div id="pageRegister" class="page" style="display:none!important">
   <div class="register-box">
     <div class="logo-big">JUSTSHRT</div>
     <div class="logo-sub">VINTAGE &amp; SECONDHAND</div>
@@ -1203,16 +1203,12 @@ function loadFirebase(){
 setProgress(10,'เริ่มต้น...');
 requestAnimationFrame(()=>setTimeout(loadFirebase,100));
 // Auto show admin login on page load
-setTimeout(()=>{ 
-  showPage('pageAdmin');
-  // ถ้ายังไม่ได้ login ให้แสดง overlay
-  if(!sessionStorage.getItem('adminAuth')){
-    document.getElementById('adminLoginOverlay').classList.add('show');
-    setTimeout(()=>document.getElementById('adminPassInput').focus(),300);
-  } else {
-    initAdminCanvas(); renderAdminNameList(); buildPaletteUI(); renderOrders();
-  }
-}, 200);
+// แสดง admin login ทันทีไม่รอ Firebase
+showPage('pageAdmin');
+if(!sessionStorage.getItem('adminAuth')){
+  document.getElementById('adminLoginOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('adminPassInput').focus(),300);
+}
 
 
 </script>
