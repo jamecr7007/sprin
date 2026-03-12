@@ -283,8 +283,8 @@ function checkAdminPass(){
     document.getElementById('adminPassInput').focus();
   }
 }
-document.getElementById('adminPassInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPass();});
-document.getElementById('adminLoginOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('adminLoginOverlay'))closeAdminLogin();});
+document.getElementById('adminPassInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPass();});
+document.getElementById('adminLoginOverlay')?.addEventListener('click',e=>{if(e.target===document.getElementById('adminLoginOverlay'))closeAdminLogin();});
 function adminLogout(){showPage('pageUser');drawWheel('user');}
 function goUserPage(){showPage('pageUser');drawWheel('user');}
 
@@ -532,7 +532,7 @@ function addName(){
   images.push(null);imageCache.push(null);weights.push(0);inp.value='';
   renderAdminNameList();drawWheel('admin');
 }
-document.getElementById('adminNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')addName();});
+document.getElementById('adminNameInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')addName();});
 function removeName(i){names.splice(i,1);colors.splice(i,1);images.splice(i,1);imageCache.splice(i,1);weights.splice(i,1);renderAdminNameList();drawWheel('admin');}
 function clearAll(){if(names.length&&!confirm('ลบทั้งหมด?'))return;names=[];colors=[];images=[];imageCache=[];weights=[];renderAdminNameList();drawWheel('admin');}
 function loadDefault(){names=['เสื้อ A','เสื้อ B','เสื้อ C','เสื้อ D','เสื้อ E','เสื้อ F'];colors=names.map((_,i)=>activePalette[i%activePalette.length]);images=names.map(()=>null);imageCache=names.map(()=>null);weights=names.map(()=>0);renderAdminNameList();drawWheel('admin');}
