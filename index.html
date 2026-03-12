@@ -251,6 +251,17 @@ input,select,textarea{font-size:16px !important}
           </div>
         </div>
         <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">📱 เครื่องที่ลงทะเบียน <span class="line"></span></div>
+          <div id="deviceCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
+          <div id="deviceList" style="max-height:200px;overflow-y:auto;">
+            <div class="empty-state">กด 🔄 เพื่อโหลด</div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:10px;">
+            <button class="btn btn-ghost" onclick="renderDevices()" style="flex:1;font-size:.76rem;">🔄 รีเฟรช</button>
+            <button class="btn btn-red" onclick="clearDevices()" style="flex:1;font-size:.76rem;">ล้างทั้งหมด</button>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:14px;">
           <div class="panel-title">📦 คำสั่งรับสินค้า <span class="line"></span></div>
           <div id="orderCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
           <div class="orders-list" id="adminOrdersList"><div class="empty-state">ยังไม่มีคำสั่ง</div></div>
@@ -351,9 +362,37 @@ function registerUser(){
   const name=document.getElementById('regName').value.trim();
   const phone=document.getElementById('regPhone').value.trim();
   if(!name||!phone){document.getElementById('regErr').style.display='block';return;}
-  currentUser={name,phone};
-  document.getElementById('userChip').textContent='👤 '+name;
-  showPage('pageUser');initUserCanvas();loadWheelData();drawWheel('user');updateUserSpinStatus();
+  if(!db){alert('กำลังเชื่อมต่อ กรุณารอสักครู่');return;}
+  const did=getDeviceId();
+  const btn=document.querySelector('#pageRegister .btn-ink');
+  btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';
+  // ดึง IP แล้วบันทึก
+  fetch('https://api.ipify.org?format=json')
+    .then(r=>r.json())
+    .then(ipData=>{
+      const ip=ipData.ip||'unknown';
+      db.ref('devices/'+did).once('value').then(snap=>{
+        if(snap.val()){
+          // เคยลงทะเบียนแล้ว อัพเดท IP ล่าสุด
+          db.ref('devices/'+did).update({lastIp:ip,lastSeen:new Date().toLocaleString('th-TH')});
+        } else {
+          // ลงทะเบียนใหม่
+          db.ref('devices/'+did).set({name,phone,ip,time:new Date().toLocaleString('th-TH')});
+        }
+        currentUser={name,phone};
+        document.getElementById('userChip').textContent='👤 '+name;
+        btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
+        showPage('pageUser');initUserCanvas();loadWheelData();drawWheel('user');updateUserSpinStatus();
+      });
+    })
+    .catch(()=>{
+      // ถ้าดึง IP ไม่ได้ก็ register ได้เลย
+      db.ref('devices/'+did).set({name,phone,ip:'unknown',time:new Date().toLocaleString('th-TH')});
+      currentUser={name,phone};
+      document.getElementById('userChip').textContent='👤 '+name;
+      btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
+      showPage('pageUser');initUserCanvas();loadWheelData();drawWheel('user');updateUserSpinStatus();
+    });
 }
 document.getElementById('regName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('regPhone').focus();});
 document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')registerUser();});
@@ -674,6 +713,33 @@ function buildPaletteUI(){
     c.appendChild(div);
   });
 }
+function renderDevices(){
+  const el=document.getElementById('deviceList');
+  const cnt=document.getElementById('deviceCount');
+  if(!el||!db)return;
+  db.ref('devices').once('value').then(snap=>{
+    const data=snap.val(),devs=data?Object.entries(data):[];
+    if(cnt)cnt.textContent=`รวม ${devs.length} เครื่อง`;
+    if(!devs.length){el.innerHTML='<div class="empty-state">ยังไม่มีเครื่อง</div>';return;}
+    el.innerHTML=devs.reverse().map(([did,d])=>`
+      <div style="background:var(--surface2);border-radius:8px;padding:7px 10px;border:1px solid rgba(79,195,247,.08);margin-bottom:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:.8rem;color:var(--ink2);font-weight:600;">👤 ${escHtml(d.name||'')}</span>
+          <button onclick="blockDevice('${did}')" style="background:none;border:none;color:#ef5350;cursor:pointer;font-size:.72rem;">บล็อก</button>
+        </div>
+        <div style="font-size:.7rem;color:var(--muted);">📞 ${escHtml(d.phone||'')} · 🌐 ${escHtml(d.ip||'unknown')}</div>
+        <div style="font-size:.65rem;color:var(--muted);">${d.time||''}</div>
+      </div>`).join('');
+  });
+}
+function blockDevice(did){
+  if(!db||!confirm('บล็อกเครื่องนี้?'))return;
+  db.ref('devices/'+did).remove().then(()=>renderDevices());
+}
+function clearDevices(){
+  if(!db||!confirm('ล้างข้อมูลเครื่องทั้งหมด?\nทุกคนต้องลงทะเบียนใหม่'))return;
+  db.ref('devices').remove().then(()=>renderDevices());
+}
 function renderOrders(){
   const el=document.getElementById('adminOrdersList'),cnt=document.getElementById('orderCount');
   if(!el||!db)return;
@@ -699,6 +765,15 @@ function launchConfetti(mc){
 
 // แสดงหน้าทันที ไม่รอ Firebase เลย
 let db=null;
+
+function getDeviceId(){
+  let did=localStorage.getItem('jsdid');
+  if(!did){
+    did='d-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+    localStorage.setItem('jsdid',did);
+  }
+  return did;
+}
 // โหลด Firebase หลังจาก browser render หน้าเสร็จแล้ว
 function loadFirebase(){
   setProgress(20,'กำลังเชื่อมต่อ...');
