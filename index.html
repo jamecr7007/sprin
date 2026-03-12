@@ -7,12 +7,15 @@
 <link rel="dns-prefetch" href="//www.gstatic.com">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400&display=swap" rel="stylesheet"></noscript>
 <style>
 
 :root{--bg:#0d1b2a;--surface:#132236;--surface2:#1a2e44;--ink:#e8f4fd;--ink2:#a8c8e8;--muted:#5a88aa}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:'Kanit',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 .page{display:none;min-height:100vh;position:relative;z-index:1}
 .page.active{display:flex;flex-direction:column}
 #pageRegister{align-items:center;justify-content:center;padding:16px;min-height:100dvh}
@@ -116,7 +119,7 @@ input,select,textarea{font-size:16px !important}
 
 </style>
 </head>
-<body>
+<body style="background:#0d1b2a">
 
 
 
@@ -436,7 +439,7 @@ function _0xffa007(){
   },300);
 }
 // fallback: ถ้า Firebase โหลดช้าเกิน 6 วินาที บังคับเข้าหน้าปกติ
-setTimeout(()=>_0xffa007(),6000);
+setTimeout(()=>_0xffa007(),3000);
 function _0xd16140(){
   if(!db){setTimeout(_0xd16140,200);return;}
   db.ref('wheelConfig').on('value',snap=>{
