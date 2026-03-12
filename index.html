@@ -640,16 +640,7 @@ function loadFirebase(){
         // subscribe realtime
         hideLoader();
         loadWheelData();
-        // เช็ค device เคยลงทะเบียนไหม
-        const did=getDeviceId();
-        db.ref('devices/'+did).once('value').then(snap=>{
-          if(snap.val()){
-            const saved=snap.val();
-            currentUser={name:saved.name,phone:saved.phone};
-            document.getElementById('userChip').textContent='👤 '+saved.name;
-            showPage('pageUser');initUserCanvas();drawWheel('user');updateUserSpinStatus();
-          }
-        });
+
       }).catch(()=>{hideLoader();});
     };
     document.head.appendChild(s2);
