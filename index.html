@@ -166,7 +166,121 @@ input,select,textarea{font-size:16px !important}
   </div>
 </div>
 
+<div id="pageAdmin" class="page">
+  <div class="admin-container">
+    <div class="admin-header">
+      <div><div class="brand-name">JUSTSHRT</div><div class="brand-sub">ADMIN PANEL</div></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="background:#1565c0;color:#90caf9;font-family:'Bebas Neue',cursive;font-size:.88rem;letter-spacing:2px;padding:6px 14px;border-radius:7px;border:1px solid rgba(79,195,247,.3);">🔓 ADMIN</div>
+        <button class="btn btn-red" onclick="adminLogout()" style="font-size:.78rem;padding:6px 12px;">ออกจากระบบ</button>
+      </div>
+    </div>
+    <div class="admin-grid">
+      <div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">รายชื่อ / รูป <span class="line"></span></div>
+          <div class="name-list" id="adminNameList"></div>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <input class="input-field" id="adminNameInput" placeholder="พิมพ์ชื่อ..." style="flex:1;">
+            <button class="btn btn-ink" onclick="addName()">+</button>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-ghost" onclick="loadDefault()" style="flex:1;font-size:.76rem;">ตัวอย่าง</button>
+            <button class="btn btn-red" onclick="clearAll()" style="flex:1;font-size:.76rem;">ล้าง</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">ธีมสี <span class="line"></span></div>
+          <div style="font-size:.7rem;color:var(--muted);margin-bottom:8px;font-weight:300;">คลิก ● เพื่อเปลี่ยนสี หรือเลือก Preset</div>
+          <div class="palette-row" id="palettePicker"></div>
+        </div>
+      </div>
+      <div class="admin-center">
+        <div class="wheel-section">
+          <div class="wheel-wrapper">
+            <canvas id="adminWheel" class="wheel-canvas"></canvas>
+            <div class="wheel-center" onclick="adminSpin()">
+              <div style="font-family:'Bebas Neue',cursive;font-size:.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;">JUST<br>SHRT</div>
+            </div>
+          </div>
+          <button class="spin-btn" id="adminSpinBtn" onclick="adminSpin()" style="width:min(380px,92vw);">▶ TEST SPIN</button>
+          <button class="btn btn-ink" onclick="publishWheel()" style="width:min(380px,92vw);padding:12px;font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:3px;">💾 บันทึก → อัพเดทวงล้อผู้ใช้</button>
+          <div id="saveMsg" style="font-size:.78rem;color:#4fc3f7;display:none;text-align:center;">✅ บันทึกแล้ว!</div>
+          <button class="btn btn-ghost" onclick="goUserPage()" style="width:min(380px,92vw);font-size:.8rem;">← ดูหน้าผู้ใช้</button>
+        </div>
+      </div>
+      <div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">🎯 จำกัดสปิน / User <span class="line"></span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:10px;border:1px solid rgba(79,195,247,.08);">
+            <div>
+              <div style="font-size:.88rem;font-weight:700;color:var(--ink);">เปิดจำกัดสปิน</div>
+              <div style="font-size:.7rem;color:var(--muted);">ปิด = ไม่จำกัด</div>
+            </div>
+            <label style="position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
+              <input type="checkbox" id="unlimitedToggle" checked onchange="toggleUnlimited()" style="opacity:0;width:0;height:0;">
+              <span id="toggleSlider" style="position:absolute;inset:0;background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:24px;transition:all .25s;"></span>
+              <span id="toggleDot" style="position:absolute;top:4px;left:4px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all .25s;"></span>
+            </label>
+          </div>
+          <div id="limitRow" style="display:none;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;border:1px solid rgba(79,195,247,.08);">
+              <div>
+                <div style="font-size:.88rem;font-weight:700;color:var(--ink);">สปินได้</div>
+                <div style="font-size:.7rem;color:var(--muted);">ครั้ง / คน</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <button onclick="changeLimit(-1)" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,195,247,.2);background:var(--surface);color:#4fc3f7;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">−</button>
+                <div id="limitVal" style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;min-width:36px;text-align:center;">1</div>
+                <button onclick="changeLimit(1)" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,195,247,.2);background:var(--surface);color:#4fc3f7;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">+</button>
+              </div>
+            </div>
+            <div style="background:var(--surface2);border-radius:10px;padding:11px 14px;border:1px solid rgba(79,195,247,.08);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="font-size:.82rem;font-weight:700;color:var(--ink);">สถิติการใช้สปิน</div>
+                <button onclick="refreshSpinStats()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;">🔄</button>
+              </div>
+              <div id="spinStatsWrap" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;">
+                <div style="font-size:.72rem;color:var(--muted);text-align:center;padding:8px;">กด 🔄 เพื่อโหลด</div>
+              </div>
+            </div>
+            <button onclick="resetAllSpins()" class="btn btn-red" style="width:100%;font-size:.8rem;padding:9px;">🔄 รีเซ็ตสปินทุกคน</button>
+          </div>
+          <div id="spinLimitStatus" style="display:none;margin-top:8px;background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.15);border-radius:8px;padding:8px 12px;font-size:.75rem;color:#4fc3f7;text-align:center;">
+            User หมุนได้สูงสุด <span id="limitDisplay" style="font-weight:700;">1</span> ครั้ง / คน
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-title">📦 คำสั่งรับสินค้า <span class="line"></span></div>
+          <div id="orderCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
+          <div class="orders-list" id="adminOrdersList"><div class="empty-state">ยังไม่มีคำสั่ง</div></div>
+          <div style="display:flex;gap:6px;margin-top:10px;">
+            <button class="btn btn-ghost" onclick="renderOrders()" style="flex:1;font-size:.76rem;">🔄 รีเฟรช</button>
+            <button class="btn btn-red" onclick="clearOrders()" style="flex:1;font-size:.76rem;">ล้าง</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">📊 ผลสปิน <span class="line"></span></div>
+          <div class="orders-list" id="adminResults" style="max-height:180px;"><div class="empty-state">ยังไม่มีผล</div></div>
+          <button class="btn btn-ghost" onclick="spinResults=[];renderSpinResults();" style="width:100%;margin-top:8px;font-size:.76rem;">ล้าง</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="admin-login-overlay" id="adminLoginOverlay">
+  <div class="login-box">
+    <h3>🔐 ADMIN</h3>
+    <p>ใส่รหัสผ่านเพื่อเข้าหน้าแอดมิน</p>
+    <input class="input-field" type="password" id="adminPassInput" placeholder="รหัสผ่าน..." onkeydown="if(event.key==='Enter')checkAdminPass()">
+    <div style="color:#ef5350;font-size:.75rem;margin-top:6px;display:none;" id="loginError">รหัสผ่านไม่ถูกต้อง</div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-ghost" onclick="closeAdminLogin()" style="flex:1;">ยกเลิก</button>
+      <button class="btn btn-ink" onclick="checkAdminPass()" style="flex:1;font-family:'Bebas Neue',cursive;letter-spacing:2px;">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="winModal">
   <div class="modal">
@@ -205,7 +319,10 @@ input,select,textarea{font-size:16px !important}
 
 <canvas class="confetti-canvas" id="confetti"></canvas>
 
+
+
 <script>
+
 const ADMIN_PASS='123';
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
 const PALETTES=[
@@ -225,44 +342,18 @@ let aCtx,aW,aH,aR,aAngle=0,aSpinning=false;
 function showPage(id){
   ['pageRegister','pageUser','pageAdmin'].forEach(p=>{
     const el=document.getElementById(p);
-    if(!el)return;
     el.classList.remove('active');el.style.display='none';
   });
   const el=document.getElementById(id);
-  if(!el)return;
   el.style.display='flex';el.classList.add('active');
 }
 function registerUser(){
   const name=document.getElementById('regName').value.trim();
   const phone=document.getElementById('regPhone').value.trim();
   if(!name||!phone){document.getElementById('regErr').style.display='block';return;}
-  if(!db){alert('กำลังเชื่อมต่อ กรุณารอสักครู่');return;}
-  const did=getDeviceId();
-  const errEl=document.getElementById('regErr');
-  const btn=document.querySelector('#pageRegister .btn-ink');
-  btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';
-  db.ref('devices/'+did).once('value').then(snap=>{
-    if(snap.val()){
-      // เคยลงทะเบียนแล้ว - โหลดข้อมูลเดิม
-      const saved=snap.val();
-      currentUser={name:saved.name,phone:saved.phone};
-      document.getElementById('userChip').textContent='👤 '+saved.name;
-      btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
-      showPage('pageUser');initUserCanvas();loadWheelData();drawWheel('user');updateUserSpinStatus();
-    } else {
-      // ลงทะเบียนใหม่
-      db.ref('devices/'+did).set({name,phone,time:new Date().toLocaleString('th-TH')})
-        .then(()=>{
-          currentUser={name,phone};
-          document.getElementById('userChip').textContent='👤 '+name;
-          btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
-          showPage('pageUser');initUserCanvas();loadWheelData();drawWheel('user');updateUserSpinStatus();
-        });
-    }
-  }).catch(()=>{
-    btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
-    errEl.textContent='เชื่อมต่อไม่สำเร็จ ลองใหม่';errEl.style.display='block';
-  });
+  currentUser={name,phone};
+  document.getElementById('userChip').textContent='👤 '+name;
+  showPage('pageUser');initUserCanvas();loadWheelData();drawWheel('user');updateUserSpinStatus();
 }
 document.getElementById('regName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('regPhone').focus();});
 document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')registerUser();});
@@ -276,6 +367,7 @@ function showAdminLogin(){
 function closeAdminLogin(){document.getElementById('adminLoginOverlay').classList.remove('show');}
 function checkAdminPass(){
   if(document.getElementById('adminPassInput').value===ADMIN_PASS){
+    sessionStorage.setItem('adminAuth','1');
     closeAdminLogin();showPage('pageAdmin');
     initAdminCanvas();loadWheelData();drawWheel('admin');
     renderAdminNameList();buildPaletteUI();renderOrders();
@@ -285,9 +377,9 @@ function checkAdminPass(){
     document.getElementById('adminPassInput').focus();
   }
 }
-document.getElementById('adminPassInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPass();});
-document.getElementById('adminLoginOverlay')?.addEventListener('click',e=>{if(e.target===document.getElementById('adminLoginOverlay'))closeAdminLogin();});
-function adminLogout(){showPage('pageUser');drawWheel('user');}
+document.getElementById('adminPassInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPass();});
+document.getElementById('adminLoginOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('adminLoginOverlay'))closeAdminLogin();});
+function adminLogout(){sessionStorage.removeItem('adminAuth');showPage('pageUser');drawWheel('user');}
 function goUserPage(){showPage('pageUser');drawWheel('user');}
 
 function setProgress(pct,txt){
@@ -316,8 +408,7 @@ function loadWheelData(){
     if(tog){tog.checked=!spinLimitEnabled;updateToggleUI();}
     if(document.getElementById('limitVal'))document.getElementById('limitVal').textContent=spinLimitMax;
     if(document.getElementById('limitDisplay'))document.getElementById('limitDisplay').textContent=spinLimitMax;
-    if(document.getElementById('adminNameList'))renderAdminNameList();
-    if(document.getElementById('adminWheel'))drawWheel('admin');
+    renderAdminNameList();drawWheel('admin');
   },err=>console.error('Firebase:',err));
 }
 function publishWheel(){
@@ -470,7 +561,6 @@ function closeSuccess(){document.getElementById('successModal').classList.remove
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function toggleUnlimited(){spinLimitEnabled=!document.getElementById('unlimitedToggle').checked;updateToggleUI();}
 function updateToggleUI(){
-  if(!document.getElementById('toggleSlider'))return;
   const on=spinLimitEnabled;
   const slider=document.getElementById('toggleSlider'),dot=document.getElementById('toggleDot');
   const row=document.getElementById('limitRow'),status=document.getElementById('spinLimitStatus');
@@ -536,7 +626,7 @@ function addName(){
   images.push(null);imageCache.push(null);weights.push(0);inp.value='';
   renderAdminNameList();drawWheel('admin');
 }
-document.getElementById('adminNameInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')addName();});
+document.getElementById('adminNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')addName();});
 function removeName(i){names.splice(i,1);colors.splice(i,1);images.splice(i,1);imageCache.splice(i,1);weights.splice(i,1);renderAdminNameList();drawWheel('admin');}
 function clearAll(){if(names.length&&!confirm('ลบทั้งหมด?'))return;names=[];colors=[];images=[];imageCache=[];weights=[];renderAdminNameList();drawWheel('admin');}
 function loadDefault(){names=['เสื้อ A','เสื้อ B','เสื้อ C','เสื้อ D','เสื้อ E','เสื้อ F'];colors=names.map((_,i)=>activePalette[i%activePalette.length]);images=names.map(()=>null);imageCache=names.map(()=>null);weights=names.map(()=>0);renderAdminNameList();drawWheel('admin');}
@@ -561,7 +651,7 @@ function uploadImage(i,inp){
 }
 function clearImage(i){images[i]=null;imageCache[i]=null;renderAdminNameList();drawWheel('admin');}
 function renderAdminNameList(){
-  const list=document.getElementById('adminNameList');if(!list)return;
+  const list=document.getElementById('adminNameList');
   if(!names.length){list.innerHTML='<div class="empty-state">ยังไม่มีรายการ</div>';return;}
   list.innerHTML=names.map((n,i)=>{
     const c=colors[i]||'#ccc',hasImg=!!images[i];
@@ -576,7 +666,7 @@ function renderAdminNameList(){
   }).join('');
 }
 function buildPaletteUI(){
-  const c=document.getElementById('palettePicker');if(!c)return;c.innerHTML='';
+  const c=document.getElementById('palettePicker');c.innerHTML='';
   PALETTES.forEach(pal=>{
     const div=document.createElement('div');div.className='palette-preset';
     div.innerHTML=pal.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('');
@@ -609,16 +699,6 @@ function launchConfetti(mc){
 
 // แสดงหน้าทันที ไม่รอ Firebase เลย
 let db=null;
-
-// Device fingerprint
-function getDeviceId(){
-  let did=localStorage.getItem('jsdid');
-  if(!did){
-    did='d-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-    localStorage.setItem('jsdid',did);
-  }
-  return did;
-}
 // โหลด Firebase หลังจาก browser render หน้าเสร็จแล้ว
 function loadFirebase(){
   setProgress(20,'กำลังเชื่อมต่อ...');
@@ -640,7 +720,6 @@ function loadFirebase(){
         // subscribe realtime
         hideLoader();
         loadWheelData();
-
       }).catch(()=>{hideLoader();});
     };
     document.head.appendChild(s2);
@@ -651,8 +730,34 @@ function loadFirebase(){
 setProgress(10,'เริ่มต้น...');
 requestAnimationFrame(()=>setTimeout(loadFirebase,100));
 
+
+// URL routing - ตรวจว่าเป็นหน้าไหน
+(function(){
+  var path = window.location.pathname;
+  var isAdmin = path === '/js-admin' || path === '/js-admin.html';
+  if(isAdmin){
+    // ซ่อน loading screen
+    var ld = document.getElementById('loadingScreen');
+    if(ld) ld.style.display = 'none';
+    // แสดงหน้า admin
+    showPage('pageAdmin');
+    // แสดง login overlay ถ้ายังไม่ได้ login
+    if(!sessionStorage.getItem('adminAuth')){
+      var ov = document.getElementById('adminLoginOverlay');
+      if(ov) ov.classList.add('show');
+      setTimeout(function(){
+        var inp = document.getElementById('adminPassInput');
+        if(inp) inp.focus();
+      }, 100);
+    } else {
+      initAdminCanvas();
+      renderAdminNameList();
+      buildPaletteUI();
+      renderOrders();
+    }
+  }
+})();
+
 </script>
-
-
 </body>
 </html>
