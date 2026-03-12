@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/js-admin", "destination": "/js-admin.html" }
+    { "source": "/js-admin", "destination": "/js-admin.html" },
+    { "source": "/", "destination": "/index.html" }
   ],
   "headers": [
     {
