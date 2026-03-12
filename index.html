@@ -118,6 +118,8 @@ input,select,textarea{font-size:16px !important}
 }
 
 </style>
+<link rel="preload" href="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" as="script">
+<link rel="preload" href="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" as="script">
 </head>
 <body style="background:#0d1b2a">
 
@@ -780,34 +782,20 @@ function _0xc41615(){
 }
 // โหลด Firebase หลังจาก browser render หน้าเสร็จแล้ว
 function _0xdedc55(){
-  _0x53e2c9(20,'กำลังเชื่อมต่อ...');
-  const s1=document.createElement('script');
-  s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
-  s1.onload=()=>{
-    _0x53e2c9(50,'โหลด Firebase...');
-    const s2=document.createElement('script');
-    s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
-    s2.onload=()=>{
-    _0x53e2c9(75,'เชื่อมต่อฐานข้อมูล...');
-      firebase.initializeApp({apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",authDomain:"justshrit.firebaseapp.com",databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"justshrit",storageBucket:"justshrit.firebasestorage.app",messagingSenderId:"266485761926",appId:"1:266485761926:web:6b435c2232352913828e07"});
-      db=firebase.database();
-      _0x53e2c9(90,'โหลดข้อมูลวงล้อ...');
-      // โหลด wheel config จาก Firebase
-      db.ref('wheelConfig').once('value').then(snap=>{
-        const d=snap.val();
-        if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;_0x46c5be();_0x214903('user');}
-        // subscribe realtime
-        _0xffa007();
-        _0xd16140();
-      }).catch(()=>{_0xffa007();});
-    };
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s1);
+  _0x53e2c9(50,'เชื่อมต่อฐานข้อมูล...');
+  firebase.initializeApp({apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",authDomain:"justshrit.firebaseapp.com",databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"justshrit",storageBucket:"justshrit.firebasestorage.app",messagingSenderId:"266485761926",appId:"1:266485761926:web:6b435c2232352913828e07"});
+  db=firebase.database();
+  _0x53e2c9(90,'โหลดข้อมูลวงล้อ...');
+  db.ref('wheelConfig').once('value').then(snap=>{
+    const d=snap.val();
+    if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;_0x46c5be();_0x214903('user');}
+    _0xffa007();
+    _0xd16140();
+  }).catch(()=>{_0xffa007();});
 }
-// รอ browser วาดหน้าเสร็จก่อน (~100ms) แล้วค่อยโหลด Firebase
+// เรียก Firebase ทันทีหลัง DOM พร้อม
 _0x53e2c9(10,'เริ่มต้น...');
-requestAnimationFrame(()=>setTimeout(_0xdedc55,100));
+document.addEventListener('DOMContentLoaded',()=>_0xdedc55());
 
 
 // URL routing
