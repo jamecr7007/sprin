@@ -226,7 +226,6 @@ body{background:#0d1b2a;color:var(--ink);font-family:'Kanit',system-ui,sans-seri
 /* © JUSTSHRT 2025 — Admin Panel */
 
 const ADMIN_PASS='\x6a\x75\x73\x74\x73\x68\x69\x72\x74\x6c\x61\x6f\x61\x64\x6d\x69\x6e\x31\x32\x33';
-const SHEETS_URL='https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
 const PALETTES=[['#c9a86c','#d4614a','#7a9e7e','#4a6fa5','#b5835a','#8b5e52'],['#a8956c','#7c9e8a','#c4835a','#6a7fa0','#b08060','#8a7060'],['#e8352a','#f5c842','#3a7bd5','#e85d04','#6d2b8a','#1a1209'],['#f4a7b9','#b8d8d8','#f7dc6f','#a8d8a8','#d4a5c7','#f0c080'],['#ff006e','#3a0ca3','#4cc9f0','#f72585','#7209b7','#4361ee']];
 var db=null;
 let names=[],colors=[],images=[],weights=[],imageCache=[];
