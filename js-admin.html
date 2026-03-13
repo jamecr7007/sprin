@@ -3,22 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>JUSTSHRT — Admin</title>
+<title>JUSTSHRT — Wheel</title>
 <link rel="dns-prefetch" href="//www.gstatic.com">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400&display=swap" rel="stylesheet">
-
-<!-- ✅ โหลด Firebase ก่อนใช้งาน -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
 <style>
 :root{--bg:#0d1b2a;--surface:#132236;--surface2:#1a2e44;--ink:#e8f4fd;--ink2:#a8c8e8;--muted:#5a88aa}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:#0d1b2a;color:var(--ink);font-family:'Kanit',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 .page{display:none;min-height:100vh;position:relative;z-index:1}
 .page.active{display:flex;flex-direction:column}
-#pageAdmin{align-items:stretch;padding:0}
+#pageRegister{align-items:center;justify-content:center;padding:16px;min-height:100dvh}
+#pageUser{align-items:center;padding:16px;padding-bottom:env(safe-area-inset-bottom,16px)}
 .input-field{background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:10px 14px;color:var(--ink);font-family:'Kanit',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;display:block;width:100%}
 .input-field:focus{border-color:#4fc3f7;box-shadow:0 0 0 2px rgba(79,195,247,.1)}
 .input-field::placeholder{color:var(--muted)}
@@ -27,15 +25,18 @@ body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-he
 .btn-ink:hover{background:linear-gradient(135deg,#1976d2,#1565c0);transform:translateY(-1px)}
 .btn-ghost{background:var(--surface2);color:var(--ink2);border:1px solid rgba(79,195,247,.15)}
 .btn-ghost:hover{border-color:rgba(79,195,247,.4)}
-.btn-red{background:rgba(198,40,40,.12);color:#ef9a9a;border:1px solid rgba(198,40,40,.25)}
-.btn-red:hover{background:rgba(198,40,40,.22)}
-.panel{background:var(--surface);border:1px solid rgba(79,195,247,.12);border-radius:14px;padding:18px;box-shadow:0 2px 16px rgba(0,0,0,.2)}
-.panel-title{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.panel-title .line{flex:1;height:1px;background:linear-gradient(to right,rgba(79,195,247,.3),transparent)}
 .modal-overlay{position:fixed;inset:0;background:rgba(5,10,20,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
 .modal-overlay.show{opacity:1;pointer-events:all}
 .modal{background:var(--surface);border:2px solid rgba(79,195,247,.3);border-radius:20px;padding:36px 28px;text-align:center;max-width:360px;width:90%;transform:scale(.85);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(79,195,247,.1),0 30px 80px rgba(0,0,0,.6)}
 .modal-overlay.show .modal{transform:scale(1)}
+.register-box{background:var(--surface);border:2px solid rgba(79,195,247,.2);border-radius:24px;padding:44px 36px;text-align:center;max-width:380px;width:100%;box-shadow:0 0 60px rgba(79,195,247,.08),0 20px 60px rgba(0,0,0,.5)}
+.logo-big{font-family:'Bebas Neue',cursive;font-size:4rem;color:#4fc3f7;letter-spacing:6px;text-shadow:0 0 30px rgba(79,195,247,.5);line-height:1;margin-bottom:4px}
+.logo-sub{font-size:.68rem;letter-spacing:4px;color:var(--muted);margin-bottom:32px}
+.user-wrap{max-width:540px;width:100%}
+.user-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:linear-gradient(135deg,#0a3060,#0d1b2a);border:1px solid rgba(79,195,247,.2);border-radius:14px;margin-bottom:18px}
+.brand-name{font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;letter-spacing:4px;line-height:1}
+.brand-sub{font-size:.56rem;letter-spacing:3px;color:rgba(168,200,232,.45);font-weight:300}
+.user-chip{background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.2);border-radius:20px;padding:4px 12px;font-size:.75rem;color:#4fc3f7}
 .wheel-section{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 .wheel-wrapper{position:relative}
 .wheel-canvas{display:block;border-radius:50%;box-shadow:0 0 0 6px #1a2e44,0 0 0 10px rgba(79,195,247,.2),0 0 0 14px rgba(79,195,247,.06),0 16px 60px rgba(0,0,0,.5)}
@@ -44,38 +45,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-he
 .spin-btn{padding:14px;background:linear-gradient(135deg,#1565c0,#0d47a1);border:1px solid rgba(79,195,247,.3);border-radius:12px;font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:4px;color:#90caf9;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(21,101,192,.4);width:min(500px,92vw)}
 .spin-btn:hover{transform:translateY(-2px)}
 .spin-btn:disabled{background:var(--surface2);color:var(--muted);border-color:transparent;transform:none;box-shadow:none;cursor:not-allowed}
-.brand-name{font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;letter-spacing:4px;line-height:1}
-.brand-sub{font-size:.56rem;letter-spacing:3px;color:rgba(168,200,232,.45);font-weight:300}
-.admin-container{max-width:1200px;margin:0 auto;padding:20px;width:100%}
-.admin-header{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;background:linear-gradient(135deg,#0a3060,#0d1b2a);border:1px solid rgba(79,195,247,.2);border-radius:14px;margin-bottom:20px}
-.admin-grid{display:grid;grid-template-columns:290px 1fr 290px;gap:18px;align-items:start}
-@media(max-width:960px){.admin-grid{grid-template-columns:1fr 1fr}.admin-center{order:-1;grid-column:1/-1}}
-@media(max-width:560px){.admin-grid{grid-template-columns:1fr}}
-.name-list{max-height:290px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:5px}
-.name-list::-webkit-scrollbar{width:3px}
-.name-item{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid rgba(79,195,247,.08);border-radius:9px;padding:6px 8px}
-.color-swatch{width:20px;height:20px;border-radius:5px;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer;border:2px solid rgba(0,0,0,.15)}
-.color-swatch input[type=color]{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);opacity:0;cursor:pointer}
-.name-text{flex:1;font-size:.82rem;font-weight:500;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75px}
-.weight-wrap{display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
-.weight-input{width:40px;background:var(--surface2);border:1px solid rgba(79,195,247,.2);border-radius:5px;color:#4fc3f7;font-family:'Kanit',sans-serif;font-size:.7rem;font-weight:600;text-align:center;padding:2px 3px;outline:none}
-.weight-pct{font-size:.57rem;color:var(--muted)}
-.img-btn{width:28px;height:28px;border-radius:6px;background:var(--surface2);border:1.5px dashed rgba(79,195,247,.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;cursor:pointer;flex-shrink:0;overflow:hidden;transition:all .15s}
-.img-btn.has-img{border-style:solid;border-color:rgba(79,195,247,.4);padding:0}
-.name-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:0 1px;line-height:1;flex-shrink:0}
-.name-del:hover{color:#ef5350}
-.palette-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.palette-preset{display:flex;border-radius:7px;overflow:hidden;cursor:pointer;border:2px solid transparent;height:22px;transition:all .15s}
-.palette-preset:hover{transform:scale(1.08);border-color:var(--ink)}
-.palette-swatch{width:14px;height:100%}
-.orders-list{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
-.order-card{background:var(--surface2);border-radius:10px;padding:10px 12px;border:1px solid rgba(79,195,247,.1)}
-.empty-state{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;font-weight:300}
-.admin-login-overlay{position:fixed;inset:0;background:rgba(5,10,20,.95);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;pointer-events:none;transition:opacity .3s}
-.admin-login-overlay.show{opacity:1;pointer-events:all}
-.login-box{background:var(--surface);border:2px solid rgba(79,195,247,.25);border-radius:22px;padding:40px 32px;text-align:center;max-width:340px;width:90%;box-shadow:0 0 50px rgba(79,195,247,.1),0 20px 60px rgba(0,0,0,.5)}
-.login-box h3{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:4px;color:#4fc3f7;margin-bottom:6px}
-.login-box p{font-size:.78rem;color:var(--muted);margin-bottom:18px;font-weight:300}
 .confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:3000}
 #loadingScreen{position:fixed;inset:0;background:#0d1b2a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease}
 #loadingScreen.hide{opacity:0;pointer-events:none}
@@ -88,6 +57,12 @@ body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-he
 .ld-txt{font-size:.7rem;color:var(--muted);letter-spacing:2px;margin-top:4px}
 @keyframes popIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
 @media(max-width:480px){
+.logo-big{font-size:2.6rem}
+.register-box{padding:28px 18px;border-radius:16px}
+.user-wrap{padding:0}
+.user-header{padding:8px 12px;border-radius:10px;margin-bottom:12px}
+.brand-name{font-size:1.4rem}
+.user-chip{font-size:.68rem;padding:3px 10px}
 .spin-btn{font-size:1.1rem;padding:13px;border-radius:10px}
 .wheel-center{width:58px;height:58px}
 .modal{padding:24px 18px;border-radius:16px}
@@ -97,11 +72,11 @@ input,select,textarea{font-size:16px !important}
 }
 </style>
 </head>
-<body>
+<body style="background:#0d1b2a">
 
 <div id="loadingScreen">
   <div class="ld-logo">JUSTSHRT</div>
-  <div class="ld-sub">ADMIN PANEL</div>
+  <div class="ld-sub">VINTAGE &amp; SECONDHAND</div>
   <div class="ld-spinner-wrap">
     <div class="ld-spinner"></div>
     <div class="ld-spinner-dot"></div>
@@ -109,590 +84,313 @@ input,select,textarea{font-size:16px !important}
   <div class="ld-txt" id="ldTxt">กำลังโหลด...</div>
 </div>
 
-<!-- ✅ pageAdmin เป็นหน้าเดียวที่นี่ -->
-<div id="pageAdmin" class="page active">
-  <div class="admin-container">
-    <div class="admin-header">
-      <div><div class="brand-name">JUSTSHRT</div><div class="brand-sub">ADMIN PANEL</div></div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="background:#1565c0;color:#90caf9;font-family:'Bebas Neue',cursive;font-size:.88rem;letter-spacing:2px;padding:6px 14px;border-radius:7px;border:1px solid rgba(79,195,247,.3);">🔓 ADMIN</div>
-        <a href="/" class="btn btn-ghost" style="font-size:.78rem;padding:6px 12px;text-decoration:none;">← หน้าผู้ใช้</a>
+<div id="pageRegister" class="page active">
+  <div class="register-box">
+    <div class="logo-big">JUSTSHRT</div>
+    <div class="logo-sub">VINTAGE &amp; SECONDHAND</div>
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:var(--ink2);margin-bottom:6px;">🎡 ลุ้นรางวัล</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:20px;font-weight:300;">กรอกข้อมูลเพื่อเข้าร่วมลุ้น</div>
+    <input class="input-field" id="regName" placeholder="ชื่อ-นามสกุล *" style="margin-bottom:10px;">
+    <input class="input-field" id="regPhone" placeholder="เบอร์โทรศัพท์ *" type="tel" style="margin-bottom:8px;">
+    <div id="regErr" style="color:#ef5350;font-size:.75rem;margin-bottom:10px;display:none;">กรุณากรอกชื่อและเบอร์โทร</div>
+    <button class="btn btn-ink" onclick="_0xf2a3b4()" style="width:100%;padding:14px;font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;">เข้าร่วมลุ้นรางวัล 🎉</button>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:14px;">ข้อมูลของคุณจะถูกส่งให้ทีมงานเมื่อกดรับสินค้า</div>
+  </div>
+</div>
+
+<div id="pageUser" class="page">
+  <div class="user-wrap">
+    <div class="user-header">
+      <div>
+        <div class="brand-name">JUSTSHRT</div>
+        <div class="brand-sub">VINTAGE &amp; SECONDHAND · WHEEL OF FORTUNE</div>
       </div>
+      <div class="user-chip" id="userChip">👤 —</div>
     </div>
-    <div class="admin-grid">
-      <div>
-        <div class="panel" style="margin-bottom:14px;">
-          <div class="panel-title">รายชื่อ / รูป <span class="line"></span></div>
-          <div class="name-list" id="adminNameList"></div>
-          <div style="display:flex;gap:6px;margin-bottom:8px;">
-            <input class="input-field" id="adminNameInput" placeholder="พิมพ์ชื่อ..." style="flex:1;">
-            <button class="btn btn-ink" onclick="addName()">+</button>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-ghost" onclick="loadDefault()" style="flex:1;font-size:.76rem;">ตัวอย่าง</button>
-            <button class="btn btn-red" onclick="clearAll()" style="flex:1;font-size:.76rem;">ล้าง</button>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-title">ธีมสี <span class="line"></span></div>
-          <div style="font-size:.7rem;color:var(--muted);margin-bottom:8px;font-weight:300;">คลิก ● เพื่อเปลี่ยนสี หรือเลือก Preset</div>
-          <div class="palette-row" id="palettePicker"></div>
+    <div class="wheel-section">
+      <div class="wheel-wrapper">
+        <canvas id="userWheel" class="wheel-canvas"></canvas>
+        <div class="wheel-center" onclick="_0xcbdced()">
+          <div style="font-family:'Bebas Neue',cursive;font-size:.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;">JUST<br>SHRT</div>
         </div>
       </div>
-      <div class="admin-center">
-        <div class="wheel-section">
-          <div class="wheel-wrapper">
-            <canvas id="adminWheel" class="wheel-canvas"></canvas>
-            <div class="wheel-center" onclick="adminSpin()">
-              <div style="font-family:'Bebas Neue',cursive;font-size:.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;">JUST<br>SHRT</div>
-            </div>
-          </div>
-          <button class="spin-btn" id="adminSpinBtn" onclick="adminSpin()" style="width:min(380px,92vw);">▶ TEST SPIN</button>
-          <button class="btn btn-ink" onclick="publishWheel()" style="width:min(380px,92vw);padding:12px;font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:3px;">💾 บันทึก → อัพเดทวงล้อผู้ใช้</button>
-          <div id="saveMsg" style="font-size:.78rem;color:#4fc3f7;display:none;text-align:center;">✅ บันทึกแล้ว!</div>
-        </div>
-      </div>
-      <div>
-        <div class="panel" style="margin-bottom:14px;">
-          <div class="panel-title">🎯 จำกัดสปิน / User <span class="line"></span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:10px;border:1px solid rgba(79,195,247,.08);">
-            <div>
-              <div style="font-size:.88rem;font-weight:700;color:var(--ink);">เปิดจำกัดสปิน</div>
-              <div style="font-size:.7rem;color:var(--muted);">ปิด = ไม่จำกัด</div>
-            </div>
-            <label style="position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
-              <input type="checkbox" id="unlimitedToggle" checked onchange="toggleUnlimited()" style="opacity:0;width:0;height:0;">
-              <span id="toggleSlider" style="position:absolute;inset:0;background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:24px;transition:all .25s;"></span>
-              <span id="toggleDot" style="position:absolute;top:4px;left:4px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all .25s;"></span>
-            </label>
-          </div>
-          <div id="limitRow" style="display:none;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;border:1px solid rgba(79,195,247,.08);">
-              <div>
-                <div style="font-size:.88rem;font-weight:700;color:var(--ink);">สปินได้</div>
-                <div style="font-size:.7rem;color:var(--muted);">ครั้ง / คน</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <button onclick="changeLimit(-1)" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,195,247,.2);background:var(--surface);color:#4fc3f7;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">−</button>
-                <div id="limitVal" style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;min-width:36px;text-align:center;">1</div>
-                <button onclick="changeLimit(1)" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,195,247,.2);background:var(--surface);color:#4fc3f7;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--surface)'">+</button>
-              </div>
-            </div>
-            <div style="background:var(--surface2);border-radius:10px;padding:11px 14px;border:1px solid rgba(79,195,247,.08);">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="font-size:.82rem;font-weight:700;color:var(--ink);">สถิติการใช้สปิน</div>
-                <button onclick="refreshSpinStats()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;">🔄</button>
-              </div>
-              <div id="spinStatsWrap" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;">
-                <div style="font-size:.72rem;color:var(--muted);text-align:center;padding:8px;">กด 🔄 เพื่อโหลด</div>
-              </div>
-            </div>
-            <button onclick="resetAllSpins()" class="btn btn-red" style="width:100%;font-size:.8rem;padding:9px;">🔄 รีเซ็ตสปินทุกคน</button>
-          </div>
-          <div id="spinLimitStatus" style="display:none;margin-top:8px;background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.15);border-radius:8px;padding:8px 12px;font-size:.75rem;color:#4fc3f7;text-align:center;">
-            User หมุนได้สูงสุด <span id="limitDisplay" style="font-weight:700;">1</span> ครั้ง / คน
-          </div>
-        </div>
-        <div class="panel" style="margin-bottom:14px;">
-          <div class="panel-title">📱 เครื่องที่ลงทะเบียน <span class="line"></span></div>
-          <div id="deviceCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
-          <div id="deviceList" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;">
-            <div class="empty-state">กด 🔄 เพื่อโหลด</div>
-          </div>
-          <div style="display:flex;gap:6px;margin-top:10px;">
-            <button class="btn btn-ghost" onclick="renderDevices()" style="flex:1;font-size:.76rem;">🔄 รีเฟรช</button>
-            <button class="btn btn-red" onclick="clearDevices()" style="flex:1;font-size:.76rem;">ล้างทั้งหมด</button>
-          </div>
-        </div>
-        <div class="panel" style="margin-bottom:14px;">
-          <div class="panel-title">📦 คำสั่งรับสินค้า <span class="line"></span></div>
-          <div id="orderCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
-          <div class="orders-list" id="adminOrdersList"><div class="empty-state">ยังไม่มีคำสั่ง</div></div>
-          <div style="display:flex;gap:6px;margin-top:10px;">
-            <button class="btn btn-ghost" onclick="renderOrders()" style="flex:1;font-size:.76rem;">🔄 รีเฟรช</button>
-            <button class="btn btn-red" onclick="clearOrders()" style="flex:1;font-size:.76rem;">ล้าง</button>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-title">📊 ผลสปิน <span class="line"></span></div>
-          <div class="orders-list" id="adminResults" style="max-height:180px;"><div class="empty-state">ยังไม่มีผล</div></div>
-          <button class="btn btn-ghost" onclick="spinResults=[];renderSpinResults();" style="width:100%;margin-top:8px;font-size:.76rem;">ล้าง</button>
-        </div>
-      </div>
+      <div id="userSpinStatus" style="font-size:.8rem;color:var(--ink2);min-height:20px;text-align:center;"></div>
+      <button class="spin-btn" id="userSpinBtn" onclick="_0xcbdced()">&#9654; SPIN THE WHEEL</button>
     </div>
   </div>
 </div>
 
-<!-- Admin Login Overlay -->
-<div class="admin-login-overlay" id="adminLoginOverlay">
-  <div class="login-box">
-    <h3>🔐 ADMIN</h3>
-    <p>ใส่รหัสผ่านเพื่อเข้าหน้าแอดมิน</p>
-    <input class="input-field" type="password" id="adminPassInput" placeholder="รหัสผ่าน..." onkeydown="if(event.key==='Enter')checkAdminPass()">
-    <div style="color:#ef5350;font-size:.75rem;margin-top:6px;display:none;" id="loginError">รหัสผ่านไม่ถูกต้อง</div>
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <a href="/" class="btn btn-ghost" style="flex:1;text-decoration:none;display:flex;align-items:center;justify-content:center;">ยกเลิก</a>
-      <button class="btn btn-ink" onclick="checkAdminPass()" style="flex:1;font-family:'Bebas Neue',cursive;letter-spacing:2px;">เข้าสู่ระบบ</button>
-    </div>
-  </div>
-</div>
-
-<!-- Win Modal -->
 <div class="modal-overlay" id="winModal">
   <div class="modal">
-    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:14px;text-shadow:0 0 16px rgba(79,195,247,.5);">🎉 ผลการสปิน 🎉</div>
-    <div id="winImgWrap" style="display:none;width:220px;height:220px;border-radius:14px;overflow:hidden;margin:0 auto 14px;border:3px solid rgba(79,195,247,.4);"><img id="winImg" style="width:100%;height:100%;object-fit:contain;background:#0d1b2a;"></div>
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:14px;text-shadow:0 0 16px rgba(79,195,247,.5);">🎉 ยินดีด้วย! 🎉</div>
+    <div id="winImgWrap" style="display:none;width:220px;height:220px;border-radius:14px;overflow:hidden;margin:0 auto 14px;border:3px solid rgba(79,195,247,.4);box-shadow:0 0 24px rgba(79,195,247,.2);"><img id="winImg" style="width:100%;height:100%;object-fit:contain;background:#0d1b2a;"></div>
     <div id="winColor" style="width:56px;height:56px;border-radius:50%;margin:10px auto 12px;border:3px solid rgba(79,195,247,.4);animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;"></div>
     <div id="winName" style="font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:16px;"></div>
-    <button class="btn btn-ghost" onclick="closeWin()" style="width:100%;padding:10px;font-size:.85rem;">ปิด</button>
+    <button class="btn btn-ink" id="claimBtn" onclick="_0xf1a2b3()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;margin-bottom:8px;">🎁 รับสินค้า</button>
+    <button class="btn btn-ghost" onclick="_0xd8e9f0()" style="width:100%;padding:10px;font-size:.85rem;">ปิด</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="claimModal">
+  <div class="modal">
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:6px;">📦 ยืนยันรับสินค้า</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:16px;">ทีมงานจะติดต่อกลับหาคุณ</div>
+    <input class="input-field" id="claimName" placeholder="ชื่อ-นามสกุล *" style="margin-bottom:10px;">
+    <input class="input-field" id="claimPhone" placeholder="เบอร์โทรศัพท์ *" type="tel" style="margin-bottom:10px;">
+    <input class="input-field" id="claimNote" placeholder="หมายเหตุ (ไม่บังคับ)" style="margin-bottom:8px;">
+    <div id="claimErr" style="color:#ef5350;font-size:.75rem;margin-bottom:10px;display:none;">กรุณากรอกชื่อและเบอร์</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" onclick="_0xc4d5e6()" style="flex:1;padding:10px;">ยกเลิก</button>
+      <button class="btn btn-ink" onclick="_0xf7a8b9()" style="flex:1;padding:10px;font-family:'Bebas Neue',cursive;letter-spacing:2px;">ยืนยัน ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div style="font-size:3rem;margin-bottom:12px;">✅</div>
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:8px;">ส่งข้อมูลแล้ว!</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">ทีมงานจะติดต่อกลับหาคุณเร็วๆ นี้ 😊</div>
+    <button class="btn btn-ink" onclick="_0xcadeef()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;">ตกลง</button>
   </div>
 </div>
 
 <canvas class="confetti-canvas" id="confetti"></canvas>
 
 <script>
-/* © JUSTSHRT 2025 — Admin Panel */
+/* © JUSTSHRT 2025 */
 
-const ADMIN_PASS = 'justshirtlaoadmin123';
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
-const PALETTES = [
-  ['#c9a86c','#d4614a','#7a9e7e','#4a6fa5','#b5835a','#8b5e52'],
-  ['#a8956c','#7c9e8a','#c4835a','#6a7fa0','#b08060','#8a7060'],
-  ['#e8352a','#f5c842','#3a7bd5','#e85d04','#6d2b8a','#1a1209'],
-  ['#f4a7b9','#b8d8d8','#f7dc6f','#a8d8a8','#d4a5c7','#f0c080'],
-  ['#ff006e','#3a0ca3','#4cc9f0','#f72585','#7209b7','#4361ee'],
-];
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
+var db=null;
+let names=[],colors=[],images=[],weights=[],imageCache=[];
+let spinLimitEnabled=false,spinLimitMax=1,userSpinCount=0;
+let currentUser={name:'',phone:''},currentWinner='';
+let uCtx,uW,uH,uR,uAngle=0,uSpinning=false;
 
-// ✅ ประกาศ db ครั้งเดียว
-var db = null;
-
-let names=[], colors=[], images=[], weights=[], imageCache=[];
-let spinLimitEnabled=false, spinLimitMax=1;
-let activePalette=[...PALETTES[0]];
-let currentWinner='', spinResults=[];
-let aCtx, aW, aH, aR, aAngle=0, aSpinning=false;
-
-// ─── Loading ───────────────────────────────────────────────
-function setProgress(txt){
-  const t=document.getElementById('ldTxt');
-  if(t&&txt) t.textContent=txt;
+function _0xb6c7d8(txt){const t=document.getElementById('ldTxt');if(t&&txt)t.textContent=txt;}
+function _0xe9faab(){
+  if(_0xe9faab._done)return;_0xe9faab._done=true;
+  setTimeout(()=>{const el=document.getElementById('loadingScreen');if(el){el.classList.add('hide');setTimeout(()=>el.style.display='none',500);}},300);
 }
-function hideLoader(){
-  if(hideLoader._done) return;
-  hideLoader._done=true;
-  setTimeout(()=>{
-    const el=document.getElementById('loadingScreen');
-    if(el){el.classList.add('hide'); setTimeout(()=>el.style.display='none',500);}
-  },300);
-}
-setTimeout(()=>hideLoader(), 5000);
+setTimeout(()=>_0xe9faab(),3000);
 
-// ─── Firebase Init ─────────────────────────────────────────
-function initFirebase(){
-  setProgress('เชื่อมต่อฐานข้อมูล...');
+function _0xa1b2c3(){
+  _0xb6c7d8('เชื่อมต่อฐานข้อมูล...');
   if(!firebase.apps.length){
-    firebase.initializeApp({
-      apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",
-      authDomain:"justshrit.firebaseapp.com",
-      databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId:"justshrit",
-      storageBucket:"justshrit.firebasestorage.app",
-      messagingSenderId:"266485761926",
-      appId:"1:266485761926:web:6b435c2232352913828e07"
-    });
+    firebase.initializeApp({apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",authDomain:"justshrit.firebaseapp.com",databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"justshrit",storageBucket:"justshrit.firebasestorage.app",messagingSenderId:"266485761926",appId:"1:266485761926:web:6b435c2232352913828e07"});
   }
-  db = firebase.database();
-  setProgress('โหลดข้อมูลวงล้อ...');
+  db=firebase.database();
+  _0xb6c7d8('โหลดข้อมูลวงล้อ...');
   db.ref('wheelConfig').once('value').then(snap=>{
     const d=snap.val();
-    if(d){
-      names=d.names||[]; colors=d.colors||[]; images=d.images||[];
-      weights=d.weights||[]; spinLimitEnabled=d.spinLimitEnabled||false; spinLimitMax=d.spinLimitMax||1;
-      preloadImages();
-    }
-    hideLoader();
-    subscribeWheel();
-    renderOrders();
-  }).catch(()=>hideLoader());
+    if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;_0xf6a7b8();_0xa9b0c1();}
+    _0xe9faab();_0xd4e5f6();
+  }).catch(()=>_0xe9faab());
 }
 
-function subscribeWheel(){
-  if(!db){setTimeout(subscribeWheel,200); return;}
+function _0xd4e5f6(){
+  if(!db){setTimeout(_0xd4e5f6,200);return;}
   db.ref('wheelConfig').on('value',snap=>{
-    const d=snap.val(); if(!d) return;
-    names=d.names||[]; colors=d.colors||[]; images=d.images||[]; weights=d.weights||[];
-    spinLimitEnabled=d.spinLimitEnabled||false; spinLimitMax=d.spinLimitMax||1;
-    preloadImages(); drawWheel();
-    const tog=document.getElementById('unlimitedToggle');
-    if(tog){tog.checked=!spinLimitEnabled; updateToggleUI();}
-    if(document.getElementById('limitVal')) document.getElementById('limitVal').textContent=spinLimitMax;
-    if(document.getElementById('limitDisplay')) document.getElementById('limitDisplay').textContent=spinLimitMax;
-    renderAdminNameList();
+    const d=snap.val();if(!d)return;
+    names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
+    spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;
+    _0xf6a7b8();_0xa9b0c1();_0xa1b2c3e();
   });
 }
 
-// ─── Admin Login ────────────────────────────────────────────
-function checkAdminPass(){
-  if(document.getElementById('adminPassInput').value===ADMIN_PASS){
-    sessionStorage.setItem('adminAuth','1');
-    document.getElementById('adminLoginOverlay').classList.remove('show');
-    document.getElementById('adminPassInput').value='';
-  } else {
-    document.getElementById('loginError').style.display='block';
-    document.getElementById('adminPassInput').value='';
-    document.getElementById('adminPassInput').focus();
-  }
+function _0xe7f8a9b(){
+  let did=localStorage.getItem('jsdid');
+  if(!did){did='d-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('jsdid',did);}
+  return did;
 }
 
-// ─── Publish ────────────────────────────────────────────────
-function publishWheel(){
-  if(!db){alert('Firebase ยังไม่พร้อม'); return;}
-  db.ref('wheelConfig').set({names,colors,images,weights,spinLimitEnabled,spinLimitMax})
-    .then(()=>{
-      db.ref('spinCounts').remove();
-      const m=document.getElementById('saveMsg'); m.style.display='block';
-      setTimeout(()=>m.style.display='none',3000);
-    }).catch(e=>alert('บันทึกไม่สำเร็จ: '+e.message));
+function _0xbacbdcb(id){
+  ['pageRegister','pageUser'].forEach(p=>{const el=document.getElementById(p);el.classList.remove('active');el.style.display='none';});
+  const el=document.getElementById(id);el.style.display='flex';el.classList.add('active');
 }
 
-// ─── Canvas ─────────────────────────────────────────────────
-function initCanvas(){
-  const c=document.getElementById('adminWheel'), ctx=c.getContext('2d');
-  const D=Math.min(400,window.innerWidth-80), DPR=window.devicePixelRatio||2;
-  c.width=D*DPR; c.height=D*DPR; c.style.width=D+'px'; c.style.height=D+'px'; ctx.scale(DPR,DPR);
-  aCtx=ctx; aW=D; aH=D; aR=D/2-10;
+function _0xf2a3b4(){
+  const name=document.getElementById('regName').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  if(!name||!phone){document.getElementById('regErr').style.display='block';return;}
+  if(!db){alert('กำลังเชื่อมต่อ กรุณารอสักครู่');return;}
+  const did=_0xe7f8a9b();
+  const btn=document.querySelector('#pageRegister .btn-ink');
+  btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';
+  fetch('https://api.ipify.org?format=json')
+    .then(r=>r.json())
+    .then(ipData=>{
+      const ip=ipData.ip||'unknown';
+      db.ref('devices/'+did).once('value').then(snap=>{
+        if(snap.val()){db.ref('devices/'+did).update({lastIp:ip,lastSeen:new Date().toLocaleString('th-TH')});}
+        else{db.ref('devices/'+did).set({name,phone,ip,time:new Date().toLocaleString('th-TH')});}
+        _0xc5d6e7(name,phone,btn);
+      });
+    })
+    .catch(()=>{
+      db.ref('devices/'+did).set({name,phone,ip:'unknown',time:new Date().toLocaleString('th-TH')});
+      _0xc5d6e7(name,phone,btn);
+    });
+}
+function _0xc5d6e7(name,phone,btn){
+  currentUser={name,phone};
+  document.getElementById('userChip').textContent='👤 '+name;
+  btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
+  _0xbacbdcb('pageUser');_0xf8a9ba();_0xa9b0c1();_0xa1b2c3e();
 }
 
-function preloadImages(){
-  imageCache=images.map(src=>{if(!src)return null; const img=new Image(); img.src=src; return img;});
+function _0xf8a9ba(){
+  const c=document.getElementById('userWheel'),ctx=c.getContext('2d');
+  const D=Math.min(460,window.innerWidth-32),DPR=window.devicePixelRatio||2;
+  c.width=D*DPR;c.height=D*DPR;c.style.width=D+'px';c.style.height=D+'px';ctx.scale(DPR,DPR);
+  uCtx=ctx;uW=D;uH=D;uR=D/2-10;
 }
-
-function drawWheel(){
-  const ctx=aCtx, W=aW, H=aH, R=aR, angle=aAngle;
-  if(!ctx) return;
+function _0xf6a7b8(){
+  imageCache=images.map(src=>{if(!src)return null;const img=new Image();img.src=src;return img;});
+}
+function _0xa9b0c1(){
+  if(!uCtx)return;
+  const ctx=uCtx,W=uW,H=uH,R=uR,angle=uAngle;
   ctx.clearRect(0,0,W,H);
   const n=names.length;
-  if(n===0){
-    ctx.fillStyle='#1a2e44'; ctx.beginPath(); ctx.arc(W/2,H/2,R,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#5a88aa'; ctx.font='600 14px Kanit,sans-serif';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('เพิ่มชื่อก่อนเริ่ม',W/2,H/2); return;
-  }
+  if(n===0){ctx.fillStyle='#1a2e44';ctx.beginPath();ctx.arc(W/2,H/2,R,0,Math.PI*2);ctx.fill();ctx.fillStyle='#5a88aa';ctx.font='600 14px Kanit,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('รอการตั้งค่าจาก Admin',W/2,H/2);return;}
   const arc=(2*Math.PI)/n;
-  ctx.save(); ctx.translate(W/2,H/2); ctx.rotate(angle);
+  ctx.save();ctx.translate(W/2,H/2);ctx.rotate(angle);
   for(let i=0;i<n;i++){
-    const s=i*arc, e=(i+1)*arc, a=e-s;
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R,s,e); ctx.closePath();
-    ctx.fillStyle='#0d1b2a'; ctx.fill();
-    ctx.strokeStyle='rgba(79,195,247,.25)'; ctx.lineWidth=2; ctx.stroke();
-    ctx.save(); ctx.rotate(s+a/2);
+    const s=i*arc,e=(i+1)*arc,a=e-s;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R,s,e);ctx.closePath();
+    ctx.fillStyle='#0d1b2a';ctx.fill();
+    ctx.strokeStyle='rgba(79,195,247,.25)';ctx.lineWidth=2;ctx.stroke();
+    ctx.save();ctx.rotate(s+a/2);
     if(imageCache[i]&&imageCache[i].complete&&imageCache[i].naturalWidth>0){
-      ctx.save(); ctx.rotate(-(s+a/2));
-      ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R-2,s,e); ctx.closePath(); ctx.clip();
-      const iw=imageCache[i].naturalWidth, ih=imageCache[i].naturalHeight;
+      ctx.save();ctx.rotate(-(s+a/2));
+      ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R-2,s,e);ctx.closePath();ctx.clip();
+      const iw=imageCache[i].naturalWidth,ih=imageCache[i].naturalHeight;
       const sc=Math.max((2*R*Math.sin(a/2))/iw,R/ih);
-      const dw=iw*sc, dh=ih*sc;
-      const mx=Math.cos(s+a/2)*(R*.6), my=Math.sin(s+a/2)*(R*.6);
-      ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
-      ctx.drawImage(imageCache[i],mx-dw/2,my-dh/2,dw,dh); ctx.restore();
-    } else {
+      const dw=iw*sc,dh=ih*sc,mx=Math.cos(s+a/2)*(R*.6),my=Math.sin(s+a/2)*(R*.6);
+      ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+      ctx.drawImage(imageCache[i],mx-dw/2,my-dh/2,dw,dh);ctx.restore();
+    }else{
       const sz=Math.min(28,Math.max(10,185/n));
-      ctx.save(); ctx.translate(R*.55,0); ctx.fillStyle='rgba(255,255,255,.55)';
-      ctx.beginPath();
-      ctx.moveTo(-sz*.5,-sz*.15); ctx.lineTo(-sz*.5,sz*.55); ctx.lineTo(sz*.5,sz*.55);
-      ctx.lineTo(sz*.5,-sz*.15); ctx.lineTo(sz*.8,-sz*.5); ctx.lineTo(sz*.5,-sz*.5);
-      ctx.lineTo(sz*.2,-sz*.15); ctx.quadraticCurveTo(0,sz*.05,-sz*.2,-sz*.15);
-      ctx.lineTo(-sz*.5,-sz*.5); ctx.lineTo(-sz*.8,-sz*.5); ctx.closePath(); ctx.fill();
+      ctx.save();ctx.translate(R*.55,0);ctx.fillStyle='rgba(255,255,255,.55)';
+      ctx.beginPath();ctx.moveTo(-sz*.5,-sz*.15);ctx.lineTo(-sz*.5,sz*.55);ctx.lineTo(sz*.5,sz*.55);ctx.lineTo(sz*.5,-sz*.15);ctx.lineTo(sz*.8,-sz*.5);ctx.lineTo(sz*.5,-sz*.5);ctx.lineTo(sz*.2,-sz*.15);ctx.quadraticCurveTo(0,sz*.05,-sz*.2,-sz*.15);ctx.lineTo(-sz*.5,-sz*.5);ctx.lineTo(-sz*.8,-sz*.5);ctx.closePath();ctx.fill();
       ctx.restore();
     }
     ctx.restore();
   }
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2);
-  ctx.strokeStyle='rgba(79,195,247,.2)'; ctx.lineWidth=4; ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.strokeStyle='rgba(79,195,247,.2)';ctx.lineWidth=4;ctx.stroke();
   ctx.restore();
-  const bh=R*.38, tipY=-(R-4), baseY=tipY-R*.7;
-  ctx.save(); ctx.translate(W/2,H/2);
-  ctx.beginPath(); ctx.moveTo(0,tipY); ctx.lineTo(-bh,baseY); ctx.lineTo(bh,baseY); ctx.closePath();
-  ctx.fillStyle='#4fc3f7'; ctx.shadowColor='rgba(79,195,247,1)'; ctx.shadowBlur=24; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(0,tipY+12); ctx.lineTo(-bh*.4,baseY+16); ctx.lineTo(bh*.4,baseY+16); ctx.closePath();
-  ctx.fillStyle='rgba(255,255,255,.25)'; ctx.shadowBlur=0; ctx.fill();
+  const bh=R*.38,tipY=-(R-4),baseY=tipY-R*.7;
+  ctx.save();ctx.translate(W/2,H/2);
+  ctx.beginPath();ctx.moveTo(0,tipY);ctx.lineTo(-bh,baseY);ctx.lineTo(bh,baseY);ctx.closePath();
+  ctx.fillStyle='#4fc3f7';ctx.shadowColor='rgba(79,195,247,1)';ctx.shadowBlur=24;ctx.fill();
+  ctx.beginPath();ctx.moveTo(0,tipY+12);ctx.lineTo(-bh*.4,baseY+16);ctx.lineTo(bh*.4,baseY+16);ctx.closePath();
+  ctx.fillStyle='rgba(255,255,255,.25)';ctx.shadowBlur=0;ctx.fill();
   ctx.restore();
 }
 
-// ─── Spin ────────────────────────────────────────────────────
-function adminSpin(){
-  if(aSpinning) return;
-  if(names.length<2){alert('เพิ่มชื่ออย่างน้อย 2 รายการ'); return;}
-  aSpinning=true;
-  const btn=document.getElementById('adminSpinBtn');
-  btn.disabled=true; btn.textContent='... SPINNING';
-  const n=names.length;
-  const rw=weights.reduce((a,b)=>a+b,0), tw=rw>0?rw:n;
-  let rand=Math.random()*tw, wIdx=0;
-  for(let i=0;i<n;i++){rand-=rw>0?(weights[i]||0):1; if(rand<=0){wIdx=i; break;}}
-  const segArc=(2*Math.PI)/n, wc=(wIdx+.5)*segArc, tgt=-Math.PI/2-wc;
-  const ca=aAngle, spins=5+Math.floor(Math.random()*5);
+function _0xcbdced(){
+  if(spinLimitEnabled&&db){
+    const key=currentUser.phone||'guest';
+    db.ref('spinCounts/'+key).once('value').then(snap=>{
+      userSpinCount=snap.val()||0;
+      if(userSpinCount>=spinLimitMax){_0xd4e5f6e();return;}
+      _0xdeeff0(idx=>{if(spinLimitEnabled){db.ref('spinCounts/'+key).set(userSpinCount+1);userSpinCount++;_0xa1b2c3e();}_0xa5b6c7(idx);});
+    });
+    return;
+  }
+  _0xdeeff0(idx=>_0xa5b6c7(idx));
+}
+function _0xdeeff0(onWin){
+  if(uSpinning)return;if(names.length<2)return;
+  uSpinning=true;
+  const btn=document.getElementById('userSpinBtn');
+  btn.disabled=true;btn.textContent='... SPINNING';
+  const n=names.length,rw=weights.reduce((a,b)=>a+b,0),tw=rw>0?rw:n;
+  let rand=Math.random()*tw,wIdx=0;
+  for(let i=0;i<n;i++){rand-=rw>0?(weights[i]||0):1;if(rand<=0){wIdx=i;break;}}
+  const segArc=(2*Math.PI)/n,wc=(wIdx+.5)*segArc,tgt=-Math.PI/2-wc;
+  const ca=uAngle,spins=5+Math.floor(Math.random()*5);
   const tr=spins*2*Math.PI+((tgt-ca%(2*Math.PI)+4*Math.PI)%(2*Math.PI));
-  const sa=ca, dur=4500+Math.random()*1500, t0=performance.now();
+  const sa=ca,dur=4500+Math.random()*1500,t0=performance.now();
   function ease(t){return 1-Math.pow(1-t,4);}
   (function animate(now){
-    const t=Math.min((now-t0)/dur,1), a=sa+ease(t)*tr;
-    aAngle=a; drawWheel();
+    const t=Math.min((now-t0)/dur,1),a=sa+ease(t)*tr;
+    uAngle=a;_0xa9b0c1();
     if(t<1){requestAnimationFrame(animate);}
-    else{
-      aAngle=(sa+tr)%(2*Math.PI); aSpinning=false;
-      btn.disabled=false; btn.textContent='▶ TEST SPIN';
-      spinResults.push({name:names[wIdx],color:colors[wIdx]||'#4a6fa5'});
-      renderSpinResults();
-      showWin(wIdx);
-    }
+    else{uAngle=(sa+tr)%(2*Math.PI);uSpinning=false;btn.disabled=false;btn.textContent='▶ SPIN THE WHEEL';onWin(wIdx);}
   })(performance.now());
 }
 
-function showWin(idx){
+function _0xa5b6c7(idx){
   currentWinner=names[idx];
-  const img=images[idx], color=colors[idx]||'#4a6fa5';
-  if(img){
-    document.getElementById('winImg').src=img;
-    document.getElementById('winImgWrap').style.display='block';
-    document.getElementById('winColor').style.display='none';
-  } else {
-    document.getElementById('winImgWrap').style.display='none';
-    document.getElementById('winColor').style.display='block';
-    document.getElementById('winColor').style.background=color;
-  }
+  const img=images[idx],color=colors[idx]||'#4a6fa5';
+  if(img){document.getElementById('winImg').src=img;document.getElementById('winImgWrap').style.display='block';document.getElementById('winColor').style.display='none';}
+  else{document.getElementById('winImgWrap').style.display='none';document.getElementById('winColor').style.display='block';document.getElementById('winColor').style.background=color;}
   document.getElementById('winName').textContent=currentWinner;
   document.getElementById('winModal').classList.add('show');
-  launchConfetti(color);
+  _0xe3f4a5(color);
 }
-function closeWin(){document.getElementById('winModal').classList.remove('show');}
+function _0xd8e9f0(){document.getElementById('winModal').classList.remove('show');}
+function _0xf1a2b3(){
+  document.getElementById('winModal').classList.remove('show');
+  document.getElementById('claimName').value=currentUser.name;
+  document.getElementById('claimPhone').value=currentUser.phone;
+  document.getElementById('claimNote').value='';
+  document.getElementById('claimErr').style.display='none';
+  document.getElementById('claimModal').classList.add('show');
+}
+function _0xc4d5e6(){document.getElementById('claimModal').classList.remove('show');}
+function _0xf7a8b9(){
+  const name=document.getElementById('claimName').value.trim();
+  const phone=document.getElementById('claimPhone').value.trim();
+  const note=document.getElementById('claimNote').value.trim();
+  if(!name||!phone){document.getElementById('claimErr').style.display='block';return;}
+  const o={name,phone,note,item:currentWinner,time:new Date().toLocaleString('th-TH')};
+  if(db)db.ref('orders').push(o);
+  if(SHEETS_URL)fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}).catch(()=>{});
+  document.getElementById('claimModal').classList.remove('show');
+  document.getElementById('successModal').classList.add('show');
+}
+function _0xcadeef(){document.getElementById('successModal').classList.remove('show');}
 
-// ─── Limit Toggle ────────────────────────────────────────────
-function toggleUnlimited(){spinLimitEnabled=!document.getElementById('unlimitedToggle').checked; updateToggleUI();}
-function updateToggleUI(){
-  const on=spinLimitEnabled;
-  const slider=document.getElementById('toggleSlider'), dot=document.getElementById('toggleDot');
-  const row=document.getElementById('limitRow'), status=document.getElementById('spinLimitStatus');
-  if(slider){slider.style.background=on?'#1565c0':'var(--surface2)'; slider.style.borderColor=on?'#4fc3f7':'rgba(79,195,247,.15)';}
-  if(dot){dot.style.transform=on?'translateX(20px)':'translateX(0)'; dot.style.background=on?'#90caf9':'var(--muted)';}
-  if(row) row.style.display=on?'flex':'none';
-  if(status) status.style.display=on?'block':'none';
-}
-function changeLimit(d){
-  spinLimitMax=Math.max(1,Math.min(99,spinLimitMax+d));
-  document.getElementById('limitVal').textContent=spinLimitMax;
-  document.getElementById('limitDisplay').textContent=spinLimitMax;
-}
-function refreshSpinStats(){
-  const wrap=document.getElementById('spinStatsWrap');
-  if(!wrap||!db) return;
-  db.ref('spinCounts').once('value').then(snap=>{
-    const data=snap.val();
-    if(!data){wrap.innerHTML='<div style="font-size:.72rem;color:var(--muted);text-align:center;padding:8px;">ยังไม่มีข้อมูล</div>'; return;}
-    const stats=Object.entries(data).map(([phone,used])=>({phone,used})).sort((a,b)=>b.used-a.used);
-    wrap.innerHTML=stats.map(function(s){
-      const pct=Math.min(100,Math.round((s.used/spinLimitMax)*100)), over=s.used>=spinLimitMax;
-      return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(79,195,247,.06);">'
-        +'<div style="font-size:.72rem;color:var(--ink2);flex:1;">📞 '+escHtml(s.phone)+'</div>'
-        +'<div style="font-size:.7rem;color:'+(over?'#ef5350':'#4fc3f7')+';font-weight:700;">'+s.used+'/'+spinLimitMax+'</div>'
-        +'<div style="width:40px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;">'
-        +'<div style="width:'+pct+'%;height:100%;background:'+(over?'#ef5350':'#4fc3f7')+';border-radius:3px;"></div>'
-        +'</div></div>';
-    }).join('');
-  });
-}
-function resetAllSpins(){
-  if(!db) return;
-  if(!confirm('รีเซ็ตสปินทุกคน?\nทุกคนจะหมุนได้ใหม่')) return;
-  db.ref('spinCounts').remove().then(()=>refreshSpinStats());
-}
-
-// ─── Name List ───────────────────────────────────────────────
-function addName(){
-  const inp=document.getElementById('adminNameInput'), name=inp.value.trim();
-  if(!name) return;
-  names.push(name);
-  colors.push(activePalette[names.length%activePalette.length]||activePalette[0]);
-  images.push(null); imageCache.push(null); weights.push(0);
-  inp.value='';
-  renderAdminNameList(); drawWheel();
-}
-function removeName(i){names.splice(i,1); colors.splice(i,1); images.splice(i,1); imageCache.splice(i,1); weights.splice(i,1); renderAdminNameList(); drawWheel();}
-function clearAll(){if(names.length&&!confirm('ลบทั้งหมด?')) return; names=[]; colors=[]; images=[]; imageCache=[]; weights=[]; renderAdminNameList(); drawWheel();}
-function loadDefault(){
-  names=['เสื้อ A','เสื้อ B','เสื้อ C','เสื้อ D','เสื้อ E','เสื้อ F'];
-  colors=names.map((_,i)=>activePalette[i%activePalette.length]);
-  images=names.map(()=>null); imageCache=names.map(()=>null); weights=names.map(()=>0);
-  renderAdminNameList(); drawWheel();
-}
-function changeWeight(i,v){weights[i]=Math.min(100,Math.max(0,parseFloat(v)||0));}
-function changeColor(i,c){colors[i]=c; drawWheel();}
-function uploadImage(i,inp){
-  const file=inp.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=new Image();
-    img.onload=()=>{
-      const MAX=400, scale=Math.min(MAX/img.width,MAX/img.height,1);
-      const canvas=document.createElement('canvas');
-      canvas.width=img.width*scale; canvas.height=img.height*scale;
-      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-      images[i]=canvas.toDataURL('image/jpeg',.7); imageCache[i]=img;
-      drawWheel(); renderAdminNameList();
-    };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-function clearImage(i){images[i]=null; imageCache[i]=null; renderAdminNameList(); drawWheel();}
-
-function escHtml(s){
-  if(!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function renderAdminNameList(){
-  const list=document.getElementById('adminNameList');
-  if(!names.length){list.innerHTML='<div class="empty-state">ยังไม่มีรายการ</div>'; return;}
-  // ✅ ใช้ string concat หลีกเลี่ยง template literal bug กับ color
-  list.innerHTML=names.map(function(n,i){
-    var c=colors[i]||'#4a6fa5';
-    if(!/^#[0-9a-fA-F]{3,8}$/.test(c)) c='#4a6fa5';
-    var w=weights[i]||0;
-    var hasImg=!!images[i];
-    var html='<div class="name-item">';
-    html+='<div class="color-swatch" style="background:'+c+'">';
-    html+='<input type="color" value="'+c+'" oninput="changeColor('+i+',this.value);this.parentElement.style.background=this.value">';
-    html+='</div>';
-    html+='<span class="name-text" title="'+escHtml(n)+'">'+escHtml(n)+'</span>';
-    html+='<div class="weight-wrap">';
-    html+='<input class="weight-input" type="number" min="0" max="100" step="1" value="'+w+'" oninput="changeWeight('+i+',this.value)">';
-    html+='<span class="weight-pct">%</span></div>';
-    if(hasImg){
-      html+='<label class="img-btn has-img"><img src="'+images[i]+'" style="width:100%;height:100%;object-fit:cover;"><input type="file" accept="image/*" style="display:none" onchange="uploadImage('+i+',this)"></label>';
-      html+='<button class="name-del" onclick="clearImage('+i+')">✕</button>';
-    } else {
-      html+='<label class="img-btn">📷<input type="file" accept="image/*" style="display:none" onchange="uploadImage('+i+',this)"></label>';
+function _0xa1b2c3e(){
+  const el=document.getElementById('userSpinStatus');if(!el)return;
+  if(!spinLimitEnabled||!db){el.textContent='';return;}
+  const key=currentUser.phone||'guest';
+  db.ref('spinCounts/'+key).once('value').then(snap=>{
+    const used=snap.val()||0,left=spinLimitMax-used;
+    if(left<=0){
+      el.innerHTML='<span style="color:#ef5350;">❌ คุณใช้สปินครบแล้ว</span>';
+      document.getElementById('userSpinBtn').disabled=true;
+      document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
+    }else{
+      el.innerHTML='เหลือสปิน <span style="color:#4fc3f7;font-weight:700;">'+left+'/'+spinLimitMax+'</span> ครั้ง';
+      document.getElementById('userSpinBtn').disabled=false;
+      document.getElementById('userSpinBtn').textContent='▶ SPIN THE WHEEL';
     }
-    html+='<button class="name-del" onclick="removeName('+i+')">🗑</button>';
-    html+='</div>';
-    return html;
-  }).join('');
-}
-
-function buildPaletteUI(){
-  const c=document.getElementById('palettePicker'); c.innerHTML='';
-  PALETTES.forEach(pal=>{
-    const div=document.createElement('div'); div.className='palette-preset';
-    div.innerHTML=pal.map(c=>'<div class="palette-swatch" style="background:'+c+'"></div>').join('');
-    div.onclick=()=>{activePalette=[...pal]; colors=names.map((_,i)=>pal[i%pal.length]); renderAdminNameList(); drawWheel();};
-    c.appendChild(div);
   });
 }
-
-// ─── Devices ─────────────────────────────────────────────────
-function renderDevices(){
-  const el=document.getElementById('deviceList'), cnt=document.getElementById('deviceCount');
-  if(!el||!db) return;
-  db.ref('devices').once('value').then(snap=>{
-    const data=snap.val(), devs=data?Object.entries(data):[];
-    if(cnt) cnt.textContent='รวม '+devs.length+' เครื่อง';
-    if(!devs.length){el.innerHTML='<div class="empty-state">ยังไม่มีเครื่อง</div>'; return;}
-    el.innerHTML=devs.reverse().map(function(entry){
-      var did=entry[0], d=entry[1];
-      return '<div style="background:var(--surface2);border-radius:8px;padding:7px 10px;border:1px solid rgba(79,195,247,.08);">'
-        +'<div style="display:flex;justify-content:space-between;">'
-        +'<span style="font-size:.8rem;color:var(--ink2);font-weight:600;">👤 '+escHtml(d.name)+'</span>'
-        +'<button onclick="blockDevice(\''+did+'\')" style="background:none;border:none;color:#ef5350;cursor:pointer;font-size:.72rem;">บล็อก</button>'
-        +'</div>'
-        +'<div style="font-size:.7rem;color:var(--muted);">📞 '+escHtml(d.phone)+' · '+(d.time||'')+'</div>'
-        +'</div>';
-    }).join('');
-  });
-}
-function blockDevice(did){
-  if(!db||!confirm('บล็อกเครื่องนี้?')) return;
-  db.ref('devices/'+did).remove().then(()=>renderDevices());
-}
-function clearDevices(){
-  if(!db||!confirm('ล้างข้อมูลเครื่องทั้งหมด?\nทุกคนต้องลงทะเบียนใหม่')) return;
-  db.ref('devices').remove().then(()=>renderDevices());
+function _0xd4e5f6e(){
+  const el=document.getElementById('userSpinStatus');
+  if(el)el.innerHTML='<span style="color:#ef5350;font-size:.85rem;">❌ คุณใช้สปินครบแล้ว</span>';
+  document.getElementById('userSpinBtn').disabled=true;
+  document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
 }
 
-// ─── Orders ──────────────────────────────────────────────────
-function renderOrders(){
-  const el=document.getElementById('adminOrdersList'), cnt=document.getElementById('orderCount');
-  if(!el||!db) return;
-  db.ref('orders').on('value',snap=>{
-    const data=snap.val(), orders=data?Object.values(data):[];
-    cnt.textContent='รวม '+orders.length+' คำสั่ง';
-    if(!orders.length){el.innerHTML='<div class="empty-state">ยังไม่มีคำสั่ง</div>'; return;}
-    el.innerHTML=[...orders].reverse().map(function(o){
-      return '<div class="order-card">'
-        +'<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
-        +'<span style="font-family:\'Bebas Neue\',cursive;color:#4fc3f7;letter-spacing:2px;font-size:.88rem;">'+escHtml(o.name)+'</span>'
-        +'<span style="font-size:.66rem;color:var(--muted);">'+o.time+'</span>'
-        +'</div>'
-        +'<div style="font-size:.76rem;color:#90caf9;">📞 '+escHtml(o.phone)+'</div>'
-        +'<div style="font-size:.73rem;color:var(--muted);">🎁 '+escHtml(o.item)+(o.note?' · '+escHtml(o.note):'')+'</div>'
-        +'</div>';
-    }).join('');
-  });
-}
-function clearOrders(){if(!db||!confirm('ลบคำสั่งทั้งหมด?')) return; db.ref('orders').remove();}
-
-// ─── Spin Results ────────────────────────────────────────────
-function renderSpinResults(){
-  const el=document.getElementById('adminResults');
-  if(!spinResults.length){el.innerHTML='<div class="empty-state">ยังไม่มีผล</div>'; return;}
-  el.innerHTML=[...spinResults].reverse().map(function(r,i){
-    return '<div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border-radius:8px;padding:7px 10px;">'
-      +'<div style="width:9px;height:9px;border-radius:50%;background:'+(r.color||'#4a6fa5')+';flex-shrink:0;"></div>'
-      +'<span style="font-size:.83rem;color:var(--ink2);font-weight:600;">'+escHtml(r.name)+'</span>'
-      +'<span style="font-size:.66rem;color:var(--muted);margin-left:auto;">#'+(spinResults.length-i)+'</span>'
-      +'</div>';
-  }).join('');
+function _0xe3f4a5(mc){
+  const c=document.getElementById('confetti');c.width=window.innerWidth;c.height=window.innerHeight;
+  const cx=c.getContext('2d'),cols=[mc,'#4fc3f7','#1565c0','#90caf9','#38bdf8'];
+  const ps=Array.from({length:90},()=>({x:Math.random()*c.width,y:-10,w:4+Math.random()*8,h:4+Math.random()*8,col:cols[Math.floor(Math.random()*cols.length)],sp:3+Math.random()*5,spin:(Math.random()-.5)*.14,ang:Math.random()*Math.PI*2,dr:(Math.random()-.5)*1.5}));
+  let f=0;(function draw(){cx.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.y+=p.sp;p.x+=p.dr;p.ang+=p.spin;cx.save();cx.translate(p.x,p.y);cx.rotate(p.ang);cx.fillStyle=p.col;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();});if(++f<100)requestAnimationFrame(draw);else cx.clearRect(0,0,c.width,c.height);})();
 }
 
-// ─── Confetti ────────────────────────────────────────────────
-function launchConfetti(mc){
-  const c=document.getElementById('confetti');
-  c.width=window.innerWidth; c.height=window.innerHeight;
-  const cx=c.getContext('2d');
-  const cols=[mc,'#4fc3f7','#1565c0','#90caf9','#38bdf8'];
-  const ps=Array.from({length:90},()=>({
-    x:Math.random()*c.width, y:-10, w:4+Math.random()*8, h:4+Math.random()*8,
-    col:cols[Math.floor(Math.random()*cols.length)],
-    sp:3+Math.random()*5, spin:(Math.random()-.5)*.14,
-    ang:Math.random()*Math.PI*2, dr:(Math.random()-.5)*1.5
-  }));
-  let f=0;
-  (function draw(){
-    cx.clearRect(0,0,c.width,c.height);
-    ps.forEach(p=>{p.y+=p.sp; p.x+=p.dr; p.ang+=p.spin; cx.save(); cx.translate(p.x,p.y); cx.rotate(p.ang); cx.fillStyle=p.col; cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cx.restore();});
-    if(++f<100) requestAnimationFrame(draw);
-    else cx.clearRect(0,0,c.width,c.height);
-  })();
-}
-
-// ─── Init ────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('adminNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')addName();});
-  document.getElementById('adminPassInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPass();});
-
-  // ✅ ตรวจสอบ session ก่อน ถ้ายังไม่ login ให้แสดง overlay
-  if(!sessionStorage.getItem('adminAuth')){
-    document.getElementById('adminLoginOverlay').classList.add('show');
-    setTimeout(()=>document.getElementById('adminPassInput').focus(), 100);
-  }
-
-  initCanvas();
-  buildPaletteUI();
-  renderAdminNameList();
-  drawWheel();
-
-  // โหลด Firebase
-  initFirebase();
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('regName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('regPhone').focus();});
+  document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')_0xf2a3b4();});
+  _0xf8a9ba();
+  _0xb6c7d8('เริ่มต้น...');
+  _0xa1b2c3();
 });
 </script>
 </body>
