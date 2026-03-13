@@ -101,7 +101,6 @@ body{background:#0d1b2a;color:var(--ink);font-family:'Kanit',system-ui,sans-seri
     <div class="admin-header">
       <div><div class="brand-name">JUSTSHRT</div><div class="brand-sub">ADMIN PANEL</div></div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="background:#1565c0;color:#90caf9;font-family:'Bebas Neue',cursive;font-size:.88rem;letter-spacing:2px;padding:6px 14px;border-radius:7px;border:1px solid rgba(79,195,247,.3);">🔓 ADMIN</div>
         <a href="/" class="btn btn-ghost" style="font-size:.78rem;padding:6px 12px;text-decoration:none;">← หน้าผู้ใช้</a>
       </div>
     </div>
@@ -223,9 +222,24 @@ body{background:#0d1b2a;color:var(--ink);font-family:'Kanit',system-ui,sans-seri
 <canvas class="confetti-canvas" id="confetti"></canvas>
 
 <script>
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='U')){
+      e.preventDefault();return false;
+    }
+  });
+  setInterval(function(){
+    var s=new Date();
+    debugger;
+    if(new Date()-s>100){document.body.innerHTML='';window.location='/';}
+  },1000);
+})();
+
 /* © JUSTSHRT 2025 — Admin Panel */
 
-const ADMIN_PASS='\x6a\x75\x73\x74\x73\x68\x69\x72\x74\x6c\x61\x6f\x61\x64\x6d\x69\x6e\x31\x32\x33';
+const ADMIN_PASS='\x61\x64\x6d\x69\x6e\x31\x32\x33';
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
 const PALETTES=[['#c9a86c','#d4614a','#7a9e7e','#4a6fa5','#b5835a','#8b5e52'],['#a8956c','#7c9e8a','#c4835a','#6a7fa0','#b08060','#8a7060'],['#e8352a','#f5c842','#3a7bd5','#e85d04','#6d2b8a','#1a1209'],['#f4a7b9','#b8d8d8','#f7dc6f','#a8d8a8','#d4a5c7','#f0c080'],['#ff006e','#3a0ca3','#4cc9f0','#f72585','#7209b7','#4361ee']];
 var db=null;
 let names=[],colors=[],images=[],weights=[],imageCache=[];
@@ -243,7 +257,7 @@ function _0xa1b2c3(){
   if(!firebase.apps.length){firebase.initializeApp({apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",authDomain:"justshrit.firebaseapp.com",databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"justshrit",storageBucket:"justshrit.firebasestorage.app",messagingSenderId:"266485761926",appId:"1:266485761926:web:6b435c2232352913828e07"});}
   db=firebase.database();
   _0xb6c7d8('โหลดข้อมูลวงล้อ...');
-  db.ref('wheelConfig').once('value').then(snap=>{
+  db.ref('\x77\x68\x65\x65\x6c\x43\x6f\x6e\x66\x69\x67').once('value').then(snap=>{
     const d=snap.val();
     if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;_0xf6a7b8();}
     _0xe9faab();_0xd4e5f6();_0xbacbdc();
@@ -252,7 +266,7 @@ function _0xa1b2c3(){
 
 function _0xd4e5f6(){
   if(!db){setTimeout(_0xd4e5f6,200);return;}
-  db.ref('wheelConfig').on('value',snap=>{
+  db.ref('\x77\x68\x65\x65\x6c\x43\x6f\x6e\x66\x69\x67').on('value',snap=>{
     const d=snap.val();if(!d)return;
     names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
     spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;
@@ -267,7 +281,7 @@ function _0xd4e5f6(){
 
 function _0xb7c8d9(){
   if(document.getElementById('adminPassInput').value===ADMIN_PASS){
-    sessionStorage.setItem('adminAuth','1');
+    sessionStorage.setItem('\x61\x64\x6d\x69\x6e\x41\x75\x74\x68','1');
     document.getElementById('adminLoginOverlay').classList.remove('show');
     document.getElementById('adminPassInput').value='';
   }else{
@@ -279,8 +293,8 @@ function _0xb7c8d9(){
 
 function _0xe0f1a2(){
   if(!db){alert('Firebase ยังไม่พร้อม');return;}
-  db.ref('wheelConfig').set({names,colors,images,weights,spinLimitEnabled,spinLimitMax}).then(()=>{
-    db.ref('spinCounts').remove();
+  db.ref('\x77\x68\x65\x65\x6c\x43\x6f\x6e\x66\x69\x67').set({names,colors,images,weights,spinLimitEnabled,spinLimitMax}).then(()=>{
+    db.ref('\x73\x70\x69\x6e\x43\x6f\x75\x6e\x74\x73').remove();
     const m=document.getElementById('saveMsg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);
   }).catch(e=>alert('บันทึกไม่สำเร็จ: '+e.message));
 }
@@ -357,14 +371,14 @@ function _0xe4f5a6(){
 function _0xb7c8d9b(d){spinLimitMax=Math.max(1,Math.min(99,spinLimitMax+d));document.getElementById('limitVal').textContent=spinLimitMax;document.getElementById('limitDisplay').textContent=spinLimitMax;}
 function _0xeafbbc(){
   const wrap=document.getElementById('spinStatsWrap');if(!wrap||!db)return;
-  db.ref('spinCounts').once('value').then(snap=>{
+  db.ref('\x73\x70\x69\x6e\x43\x6f\x75\x6e\x74\x73').once('value').then(snap=>{
     const data=snap.val();
     if(!data){wrap.innerHTML='<div style="font-size:.72rem;color:var(--muted);text-align:center;padding:8px;">ยังไม่มีข้อมูล</div>';return;}
     const stats=Object.entries(data).map(([phone,used])=>({phone,used})).sort((a,b)=>b.used-a.used);
     wrap.innerHTML=stats.map(function(s){const pct=Math.min(100,Math.round((s.used/spinLimitMax)*100)),over=s.used>=spinLimitMax;return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(79,195,247,.06);"><div style="font-size:.72rem;color:var(--ink2);flex:1;">📞 '+_0xb8c9da(s.phone)+'</div><div style="font-size:.7rem;color:'+(over?'#ef5350':'#4fc3f7')+';font-weight:700;">'+s.used+'/'+spinLimitMax+'</div><div style="width:40px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+(over?'#ef5350':'#4fc3f7')+';border-radius:3px;"></div></div></div>';}).join('');
   });
 }
-function _0xcddeef(){if(!db)return;if(!confirm('รีเซ็ตสปินทุกคน?\nทุกคนจะหมุนได้ใหม่'))return;db.ref('spinCounts').remove().then(()=>_0xeafbbc());}
+function _0xcddeef(){if(!db)return;if(!confirm('รีเซ็ตสปินทุกคน?\nทุกคนจะหมุนได้ใหม่'))return;db.ref('\x73\x70\x69\x6e\x43\x6f\x75\x6e\x74\x73').remove().then(()=>_0xeafbbc());}
 
 function _0xf0a1b2(){const inp=document.getElementById('adminNameInput'),name=inp.value.trim();if(!name)return;names.push(name);colors.push(activePalette[names.length%activePalette.length]||activePalette[0]);images.push(null);imageCache.push(null);weights.push(0);inp.value='';_0xebfcad();_0xa9b0c1();}
 function _0xc3d4e5c(i){names.splice(i,1);colors.splice(i,1);images.splice(i,1);imageCache.splice(i,1);weights.splice(i,1);_0xebfcad();_0xa9b0c1();}
@@ -397,7 +411,7 @@ function _0xcedff0(){
 
 function _0xa1b2c3d(){
   const el=document.getElementById('deviceList'),cnt=document.getElementById('deviceCount');if(!el||!db)return;
-  db.ref('devices').once('value').then(snap=>{
+  db.ref('\x64\x65\x76\x69\x63\x65\x73').once('value').then(snap=>{
     const data=snap.val(),devs=data?Object.entries(data):[];
     if(cnt)cnt.textContent='รวม '+devs.length+' เครื่อง';
     if(!devs.length){el.innerHTML='<div class="empty-state">ยังไม่มีเครื่อง</div>';return;}
@@ -405,17 +419,17 @@ function _0xa1b2c3d(){
   });
 }
 function _0xd4e5f6d(did){if(!db||!confirm('บล็อกเครื่องนี้?'))return;db.ref('devices/'+did).remove().then(()=>_0xa1b2c3d());}
-function _0xe7f8a9(){if(!db||!confirm('ล้างข้อมูลเครื่องทั้งหมด?\nทุกคนต้องลงทะเบียนใหม่'))return;db.ref('devices').remove().then(()=>_0xa1b2c3d());}
+function _0xe7f8a9(){if(!db||!confirm('ล้างข้อมูลเครื่องทั้งหมด?\nทุกคนต้องลงทะเบียนใหม่'))return;db.ref('\x64\x65\x76\x69\x63\x65\x73').remove().then(()=>_0xa1b2c3d());}
 
 function _0xbacbdc(){
   const el=document.getElementById('adminOrdersList'),cnt=document.getElementById('orderCount');if(!el||!db)return;
-  db.ref('orders').on('value',snap=>{
+  db.ref('\x6f\x72\x64\x65\x72\x73').on('value',snap=>{
     const data=snap.val(),orders=data?Object.values(data):[];cnt.textContent='รวม '+orders.length+' คำสั่ง';
     if(!orders.length){el.innerHTML='<div class="empty-state">ยังไม่มีคำสั่ง</div>';return;}
     el.innerHTML=[...orders].reverse().map(function(o){return '<div class="order-card"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-family:\'Bebas Neue\',cursive;color:#4fc3f7;letter-spacing:2px;font-size:.88rem;">'+_0xb8c9da(o.name)+'</span><span style="font-size:.66rem;color:var(--muted);">'+o.time+'</span></div><div style="font-size:.76rem;color:#90caf9;">📞 '+_0xb8c9da(o.phone)+'</div><div style="font-size:.73rem;color:var(--muted);">🎁 '+_0xb8c9da(o.item)+(o.note?' · '+_0xb8c9da(o.note):'')+'</div></div>';}).join('');
   });
 }
-function _0xedfeaf(){if(!db||!confirm('ลบคำสั่งทั้งหมด?'))return;db.ref('orders').remove();}
+function _0xedfeaf(){if(!db||!confirm('ลบคำสั่งทั้งหมด?'))return;db.ref('\x6f\x72\x64\x65\x72\x73').remove();}
 
 function _0xb0c1d2(){
   const el=document.getElementById('adminResults');if(!spinResults.length){el.innerHTML='<div class="empty-state">ยังไม่มีผล</div>';return;}
@@ -432,7 +446,7 @@ function _0xe3f4a5(mc){
 document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('adminNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')_0xf0a1b2();});
   document.getElementById('adminPassInput').addEventListener('keydown',e=>{if(e.key==='Enter')_0xb7c8d9();});
-  if(!sessionStorage.getItem('adminAuth')){document.getElementById('adminLoginOverlay').classList.add('show');setTimeout(()=>document.getElementById('adminPassInput').focus(),100);}
+  if(!sessionStorage.getItem('\x61\x64\x6d\x69\x6e\x41\x75\x74\x68')){document.getElementById('adminLoginOverlay').classList.add('show');setTimeout(()=>document.getElementById('adminPassInput').focus(),100);}
   _0xc3d4e5();_0xcedff0();_0xebfcad();_0xa9b0c1();_0xa1b2c3();
 });
 </script>
