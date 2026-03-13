@@ -7,23 +7,20 @@
 <link rel="dns-prefetch" href="//www.gstatic.com">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400&display=swap" rel="stylesheet">
-
-<!-- ✅ FIX: โหลด Firebase ก่อนใช้งาน -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
 <style>
 :root{--bg:#0d1b2a;--surface:#132236;--surface2:#1a2e44;--ink:#e8f4fd;--ink2:#a8c8e8;--muted:#5a88aa}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:#0d1b2a;color:var(--ink);font-family:'Noto Sans Lao',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
 .page{display:none;min-height:100vh;position:relative;z-index:1}
 .page.active{display:flex;flex-direction:column}
 #pageRegister{align-items:center;justify-content:center;padding:16px;min-height:100dvh}
 #pageUser{align-items:center;padding:16px;padding-bottom:env(safe-area-inset-bottom,16px)}
-.input-field{background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:10px 14px;color:var(--ink);font-family:'Kanit',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;display:block;width:100%}
+.input-field{background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:10px 14px;color:var(--ink);font-family:'Noto Sans Lao',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;display:block;width:100%}
 .input-field:focus{border-color:#4fc3f7;box-shadow:0 0 0 2px rgba(79,195,247,.1)}
 .input-field::placeholder{color:var(--muted)}
-.btn{padding:10px 16px;border-radius:10px;border:none;font-family:'Kanit',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .15s}
+.btn{padding:10px 16px;border-radius:10px;border:none;font-family:'Noto Sans Lao',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .15s}
 .btn-ink{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#90caf9;border:1px solid rgba(79,195,247,.2)}
 .btn-ink:hover{background:linear-gradient(135deg,#1976d2,#1565c0);transform:translateY(-1px)}
 .btn-ghost{background:var(--surface2);color:var(--ink2);border:1px solid rgba(79,195,247,.15)}
@@ -33,11 +30,11 @@ body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-he
 .modal{background:var(--surface);border:2px solid rgba(79,195,247,.3);border-radius:20px;padding:36px 28px;text-align:center;max-width:360px;width:90%;transform:scale(.85);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(79,195,247,.1),0 30px 80px rgba(0,0,0,.6)}
 .modal-overlay.show .modal{transform:scale(1)}
 .register-box{background:var(--surface);border:2px solid rgba(79,195,247,.2);border-radius:24px;padding:44px 36px;text-align:center;max-width:380px;width:100%;box-shadow:0 0 60px rgba(79,195,247,.08),0 20px 60px rgba(0,0,0,.5)}
-.logo-big{font-family:'Bebas Neue',cursive;font-size:4rem;color:#4fc3f7;letter-spacing:6px;text-shadow:0 0 30px rgba(79,195,247,.5);line-height:1;margin-bottom:4px}
+.logo-big{font-family:'Noto Sans Lao',sans-serif;font-size:4rem;color:#4fc3f7;letter-spacing:6px;text-shadow:0 0 30px rgba(79,195,247,.5);line-height:1;margin-bottom:4px}
 .logo-sub{font-size:.68rem;letter-spacing:4px;color:var(--muted);margin-bottom:32px}
 .user-wrap{max-width:540px;width:100%}
 .user-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:linear-gradient(135deg,#0a3060,#0d1b2a);border:1px solid rgba(79,195,247,.2);border-radius:14px;margin-bottom:18px}
-.brand-name{font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#4fc3f7;letter-spacing:4px;line-height:1}
+.brand-name{font-family:'Noto Sans Lao',sans-serif;font-size:1.8rem;color:#4fc3f7;letter-spacing:4px;line-height:1}
 .brand-sub{font-size:.56rem;letter-spacing:3px;color:rgba(168,200,232,.45);font-weight:300}
 .user-chip{background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.2);border-radius:20px;padding:4px 12px;font-size:.75rem;color:#4fc3f7}
 .wheel-section{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
@@ -45,13 +42,13 @@ body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif;min-he
 .wheel-canvas{display:block;border-radius:50%;box-shadow:0 0 0 6px #1a2e44,0 0 0 10px rgba(79,195,247,.2),0 0 0 14px rgba(79,195,247,.06),0 16px 60px rgba(0,0,0,.5)}
 .wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:50%;z-index:10;display:flex;align-items:center;justify-content:center;cursor:pointer;border:3px solid rgba(79,195,247,.5);box-shadow:0 0 24px rgba(79,195,247,.35);transition:transform .15s}
 .wheel-center:hover{transform:translate(-50%,-50%) scale(1.08)}
-.spin-btn{padding:14px;background:linear-gradient(135deg,#1565c0,#0d47a1);border:1px solid rgba(79,195,247,.3);border-radius:12px;font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:4px;color:#90caf9;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(21,101,192,.4);width:min(500px,92vw)}
+.spin-btn{padding:14px;background:linear-gradient(135deg,#1565c0,#0d47a1);border:1px solid rgba(79,195,247,.3);border-radius:12px;font-family:'Noto Sans Lao',sans-serif;font-size:1.3rem;letter-spacing:4px;color:#90caf9;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(21,101,192,.4);width:min(500px,92vw)}
 .spin-btn:hover{transform:translateY(-2px)}
 .spin-btn:disabled{background:var(--surface2);color:var(--muted);border-color:transparent;transform:none;box-shadow:none;cursor:not-allowed}
 .confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:3000}
 #loadingScreen{position:fixed;inset:0;background:#0d1b2a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease}
 #loadingScreen.hide{opacity:0;pointer-events:none}
-.ld-logo{font-family:'Bebas Neue',Impact,cursive;font-size:3.5rem;color:#4fc3f7;letter-spacing:8px;text-shadow:0 0 30px rgba(79,195,247,.5)}
+.ld-logo{font-family:'Noto Sans Lao',sans-serif;font-size:3.5rem;color:#4fc3f7;letter-spacing:8px;text-shadow:0 0 30px rgba(79,195,247,.5)}
 .ld-sub{font-size:.62rem;letter-spacing:5px;color:var(--muted);margin-top:-16px}
 .ld-spinner-wrap{position:relative;width:80px;height:80px;margin-top:10px}
 .ld-spinner{width:80px;height:80px;border-radius:50%;border:3px solid rgba(79,195,247,.1);border-top-color:#4fc3f7;border-right-color:#1565c0;animation:ldSpin .9s linear infinite}
@@ -75,29 +72,29 @@ input,select,textarea{font-size:16px !important}
 }
 </style>
 </head>
-<body>
+<body style="background:#0d1b2a">
 
 <div id="loadingScreen">
-  <div class="ld-logo">JUSTSHRT</div>
+  <div class="ld-logo" style="font-family:'Bebas Neue',cursive;">JUSTSHRT</div>
   <div class="ld-sub">VINTAGE &amp; SECONDHAND</div>
   <div class="ld-spinner-wrap">
     <div class="ld-spinner"></div>
     <div class="ld-spinner-dot"></div>
   </div>
-  <div class="ld-txt" id="ldTxt">กำลังโหลด...</div>
+  <div class="ld-txt" id="ldTxt">ກຳລັງໂຫຼດ...</div>
 </div>
 
 <div id="pageRegister" class="page active">
   <div class="register-box">
-    <div class="logo-big">JUSTSHRT</div>
+    <div class="logo-big" style="font-family:'Bebas Neue',cursive;">JUSTSHRT</div>
     <div class="logo-sub">VINTAGE &amp; SECONDHAND</div>
-    <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:var(--ink2);margin-bottom:6px;">🎡 ลุ้นรางวัล</div>
-    <div style="font-size:.78rem;color:var(--muted);margin-bottom:20px;font-weight:300;">กรอกข้อมูลเพื่อเข้าร่วมลุ้น</div>
-    <input class="input-field" id="regName" placeholder="ชื่อ-นามสกุล *" style="margin-bottom:10px;">
-    <input class="input-field" id="regPhone" placeholder="เบอร์โทรศัพท์ *" type="tel" style="margin-bottom:8px;">
-    <div id="regErr" style="color:#ef5350;font-size:.75rem;margin-bottom:10px;display:none;">กรุณากรอกชื่อและเบอร์โทร</div>
-    <button class="btn btn-ink" onclick="registerUser()" style="width:100%;padding:14px;font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;">เข้าร่วมลุ้นรางวัล 🎉</button>
-    <div style="font-size:.68rem;color:var(--muted);margin-top:14px;">ข้อมูลของคุณจะถูกส่งให้ทีมงานเมื่อกดรับสินค้า</div>
+    <div style="font-size:1.1rem;color:var(--ink2);margin-bottom:6px;letter-spacing:1px;">🎡 ລຸ້ນລາງວັນ</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:20px;font-weight:300;">ປ້ອນຂໍ້ມູນເພື່ອເຂົ້າຮ່ວມລຸ້ນ</div>
+    <input class="input-field" id="regName" placeholder="ຊື່-ນາມສະກຸນ *" style="margin-bottom:10px;">
+    <input class="input-field" id="regPhone" placeholder="ເບີໂທລະສັບ *" type="tel" style="margin-bottom:8px;">
+    <div id="regErr" style="color:#ef5350;font-size:.75rem;margin-bottom:10px;display:none;">ກະລຸນາປ້ອນຊື່ ແລະ ເບີໂທ</div>
+    <button class="btn btn-ink" onclick="_0xf2a3b4()" style="width:100%;padding:15px;font-size:1rem;letter-spacing:1px;background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:12px;box-shadow:0 4px 20px rgba(21,101,192,.5);">🎉 ເຂົ້າຮ່ວມລຸ້ນລາງວັນ</button>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:14px;">ຂໍ້ມູນຂອງທ່ານຈະຖືກສົ່ງໃຫ້ທີມງານເມື່ອກົດຮັບ</div>
   </div>
 </div>
 
@@ -105,7 +102,7 @@ input,select,textarea{font-size:16px !important}
   <div class="user-wrap">
     <div class="user-header">
       <div>
-        <div class="brand-name">JUSTSHRT</div>
+        <div class="brand-name" style="font-family:'Bebas Neue',cursive;">JUSTSHRT</div>
         <div class="brand-sub">VINTAGE &amp; SECONDHAND · WHEEL OF FORTUNE</div>
       </div>
       <div class="user-chip" id="userChip">👤 —</div>
@@ -113,38 +110,38 @@ input,select,textarea{font-size:16px !important}
     <div class="wheel-section">
       <div class="wheel-wrapper">
         <canvas id="userWheel" class="wheel-canvas"></canvas>
-        <div class="wheel-center" onclick="userSpin()">
-          <div style="font-family:'Bebas Neue',cursive;font-size:.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;">JUST<br>SHRT</div>
+        <div class="wheel-center" onclick="_0xcbdced()">
+          <div style="font-family:'Noto Sans Lao',sans-serif;font-size:.8rem;letter-spacing:2px;color:#4fc3f7;text-align:center;line-height:1.2;" style="font-family:'Bebas Neue',cursive;">JUST<br>SHRT</div>
         </div>
       </div>
       <div id="userSpinStatus" style="font-size:.8rem;color:var(--ink2);min-height:20px;text-align:center;"></div>
-      <button class="spin-btn" id="userSpinBtn" onclick="userSpin()">▶ SPIN THE WHEEL</button>
+      <button class="spin-btn" id="userSpinBtn" onclick="_0xcbdced()" style="font-family:'Bebas Neue',cursive;">&#9654; SPIN THE WHEEL</button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="winModal">
   <div class="modal">
-    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:14px;text-shadow:0 0 16px rgba(79,195,247,.5);">🎉 ยินดีด้วย! 🎉</div>
+    <div style="font-family:'Noto Sans Lao',sans-serif;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:14px;text-shadow:0 0 16px rgba(79,195,247,.5);">🎉 ຍິນດີດ້ວຍ! 🎉</div>
     <div id="winImgWrap" style="display:none;width:220px;height:220px;border-radius:14px;overflow:hidden;margin:0 auto 14px;border:3px solid rgba(79,195,247,.4);box-shadow:0 0 24px rgba(79,195,247,.2);"><img id="winImg" style="width:100%;height:100%;object-fit:contain;background:#0d1b2a;"></div>
     <div id="winColor" style="width:56px;height:56px;border-radius:50%;margin:10px auto 12px;border:3px solid rgba(79,195,247,.4);animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;"></div>
-    <div id="winName" style="font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:16px;"></div>
-    <button class="btn btn-ink" id="claimBtn" onclick="openClaim()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;margin-bottom:8px;">🎁 รับสินค้า</button>
-    <button class="btn btn-ghost" onclick="closeWin()" style="width:100%;padding:10px;font-size:.85rem;">ปิด</button>
+    <div id="winName" style="font-family:'Noto Sans Lao',sans-serif;font-size:2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:16px;"></div>
+    <button class="btn btn-ink" id="claimBtn" onclick="_0xf1a2b3()" style="width:100%;padding:13px;font-family:'Noto Sans Lao',sans-serif;font-size:1.1rem;letter-spacing:3px;margin-bottom:8px;">🎁 ຮັບລາງວັນ</button>
+    <button class="btn btn-ghost" onclick="_0xd8e9f0()" style="width:100%;padding:10px;font-size:.85rem;">ປິດ</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="claimModal">
   <div class="modal">
-    <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:6px;">📦 ยืนยันรับสินค้า</div>
-    <div style="font-size:.78rem;color:var(--muted);margin-bottom:16px;">ทีมงานจะติดต่อกลับหาคุณ</div>
-    <input class="input-field" id="claimName" placeholder="ชื่อ-นามสกุล *" style="margin-bottom:10px;">
-    <input class="input-field" id="claimPhone" placeholder="เบอร์โทรศัพท์ *" type="tel" style="margin-bottom:10px;">
-    <input class="input-field" id="claimNote" placeholder="หมายเหตุ (ไม่บังคับ)" style="margin-bottom:8px;">
-    <div id="claimErr" style="color:#ef5350;font-size:.75rem;margin-bottom:10px;display:none;">กรุณากรอกชื่อและเบอร์</div>
+    <div style="font-family:'Noto Sans Lao',sans-serif;font-size:1.2rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:6px;">📦 ຢືນຢັນຮັບສິນຄ້າ</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:16px;">ທີມງານຈະຕິດຕໍ່ກັບທ່ານ</div>
+    <input class="input-field" id="claimName" placeholder="ຊື່-ນາມສະກຸນ *" style="margin-bottom:10px;">
+    <input class="input-field" id="claimPhone" placeholder="ເບີໂທລະສັບ *" type="tel" style="margin-bottom:10px;">
+    <input class="input-field" id="claimNote" placeholder="ໝາຍເຫດ (ບໍ່ບັງຄັບ)" style="margin-bottom:8px;">
+    <div id="claimErr" style="color:#ef5350;font-size:.75rem;margin-bottom:10px;display:none;">ກະລຸນາປ້ອນຊື່ ແລະ ເບີ</div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost" onclick="closeClaim()" style="flex:1;padding:10px;">ยกเลิก</button>
-      <button class="btn btn-ink" onclick="submitClaim()" style="flex:1;padding:10px;font-family:'Bebas Neue',cursive;letter-spacing:2px;">ยืนยัน ✓</button>
+      <button class="btn btn-ghost" onclick="_0xc4d5e6()" style="flex:1;padding:10px;">ຍົກເລີກ</button>
+      <button class="btn btn-ink" onclick="_0xf7a8b9()" style="flex:1;padding:10px;font-family:'Noto Sans Lao',sans-serif;letter-spacing:2px;">ຢືນຢັນ ✓</button>
     </div>
   </div>
 </div>
@@ -152,9 +149,9 @@ input,select,textarea{font-size:16px !important}
 <div class="modal-overlay" id="successModal">
   <div class="modal">
     <div style="font-size:3rem;margin-bottom:12px;">✅</div>
-    <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:8px;">ส่งข้อมูลแล้ว!</div>
-    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">ทีมงานจะติดต่อกลับหาคุณเร็วๆ นี้ 😊</div>
-    <button class="btn btn-ink" onclick="closeSuccess()" style="width:100%;padding:13px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;">ตกลง</button>
+    <div style="font-family:'Noto Sans Lao',sans-serif;font-size:1.3rem;letter-spacing:3px;color:#4fc3f7;margin-bottom:8px;">ສົ່ງຂໍ້ມູນແລ້ວ!</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">ທີມງານຈະຕິດຕໍ່ກັບທ່ານเร็วๆ นี้ 😊</div>
+    <button class="btn btn-ink" onclick="_0xcadeef()" style="width:100%;padding:13px;font-family:'Noto Sans Lao',sans-serif;font-size:1.1rem;letter-spacing:3px;">ຕົກລົງ</button>
   </div>
 </div>
 
@@ -163,74 +160,63 @@ input,select,textarea{font-size:16px !important}
 <script>
 /* © JUSTSHRT 2025 */
 
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbz-HrdJNSm-9MuNrFfQv8ujx5bKuVk7CXUJ9PCU8A3jx3hU5HPEdOlRg1Jrm7AlHPGD/exec';
+var db=null;
+let names=[],colors=[],images=[],weights=[],imageCache=[];
+let spinLimitEnabled=false,spinLimitMax=1,userSpinCount=0;
+let currentUser={name:'',phone:''},currentWinner='';
+let uCtx,uW,uH,uR,uAngle=0,uSpinning=false;
 
-var db = null;
-
-let names=[], colors=[], images=[], weights=[], imageCache=[];
-let spinLimitEnabled=false, spinLimitMax=1, userSpinCount=0;
-let currentUser={name:'',phone:''}, currentWinner='';
-let uCtx, uW, uH, uR, uAngle=0, uSpinning=false;
-
-function setProgress(txt){const t=document.getElementById('ldTxt');if(t&&txt)t.textContent=txt;}
-function hideLoader(){
-  if(hideLoader._done)return; hideLoader._done=true;
+function _0xb6c7d8(txt){const t=document.getElementById('ldTxt');if(t&&txt)t.textContent=txt;}
+function _0xe9faab(){
+  if(_0xe9faab._done)return;_0xe9faab._done=true;
   setTimeout(()=>{const el=document.getElementById('loadingScreen');if(el){el.classList.add('hide');setTimeout(()=>el.style.display='none',500);}},300);
 }
-setTimeout(()=>hideLoader(),5000);
+setTimeout(()=>_0xe9faab(),3000);
 
-function initFirebase(){
-  setProgress('เชื่อมต่อฐานข้อมูล...');
+function _0xa1b2c3(){
+  _0xb6c7d8('ເຊື່ອມຕໍ່ຖານຂໍ້ມູນ...');
   if(!firebase.apps.length){
-    firebase.initializeApp({
-      apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",
-      authDomain:"justshrit.firebaseapp.com",
-      databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId:"justshrit",
-      storageBucket:"justshrit.firebasestorage.app",
-      messagingSenderId:"266485761926",
-      appId:"1:266485761926:web:6b435c2232352913828e07"
-    });
+    firebase.initializeApp({apiKey:"AIzaSyCVbVFhL7BTS-R2LvIgapRnitnOwzZ9i-Q",authDomain:"justshrit.firebaseapp.com",databaseURL:"https://justshrit-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"justshrit",storageBucket:"justshrit.firebasestorage.app",messagingSenderId:"266485761926",appId:"1:266485761926:web:6b435c2232352913828e07"});
   }
   db=firebase.database();
-  setProgress('โหลดข้อมูลวงล้อ...');
+  _0xb6c7d8('ໂຫຼດຂໍ້ມູນວົງລໍ້...');
   db.ref('wheelConfig').once('value').then(snap=>{
     const d=snap.val();
-    if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;preloadImages();drawWheel();}
-    hideLoader();
-    subscribeWheel();
-  }).catch(()=>hideLoader());
+    if(d){names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;_0xf6a7b8();_0xa9b0c1();}
+    _0xe9faab();_0xd4e5f6();
+  }).catch(()=>_0xe9faab());
 }
 
-function subscribeWheel(){
-  if(!db){setTimeout(subscribeWheel,200);return;}
+function _0xd4e5f6(){
+  if(!db){setTimeout(_0xd4e5f6,200);return;}
   db.ref('wheelConfig').on('value',snap=>{
     const d=snap.val();if(!d)return;
     names=d.names||[];colors=d.colors||[];images=d.images||[];weights=d.weights||[];
     spinLimitEnabled=d.spinLimitEnabled||false;spinLimitMax=d.spinLimitMax||1;
-    preloadImages();drawWheel();updateUserSpinStatus();
+    _0xf6a7b8();_0xa9b0c1();_0xa1b2c3e();
   });
 }
 
-function getDeviceId(){
+function _0xe7f8a9b(){
   let did=localStorage.getItem('jsdid');
   if(!did){did='d-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('jsdid',did);}
   return did;
 }
 
-function showPage(id){
+function _0xbacbdcb(id){
   ['pageRegister','pageUser'].forEach(p=>{const el=document.getElementById(p);el.classList.remove('active');el.style.display='none';});
   const el=document.getElementById(id);el.style.display='flex';el.classList.add('active');
 }
 
-function registerUser(){
+function _0xf2a3b4(){
   const name=document.getElementById('regName').value.trim();
   const phone=document.getElementById('regPhone').value.trim();
   if(!name||!phone){document.getElementById('regErr').style.display='block';return;}
-  if(!db){alert('กำลังเชื่อมต่อ กรุณารอสักครู่');return;}
-  const did=getDeviceId();
+  if(!db){alert('ກຳລັງເຊື່ອມຕໍ່ ກະລຸນາລໍຖ້າ');return;}
+  const did=_0xe7f8a9b();
   const btn=document.querySelector('#pageRegister .btn-ink');
-  btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';
+  btn.disabled=true;btn.textContent='ກຳລັງກວດສອບ...';
   fetch('https://api.ipify.org?format=json')
     .then(r=>r.json())
     .then(ipData=>{
@@ -238,40 +224,36 @@ function registerUser(){
       db.ref('devices/'+did).once('value').then(snap=>{
         if(snap.val()){db.ref('devices/'+did).update({lastIp:ip,lastSeen:new Date().toLocaleString('th-TH')});}
         else{db.ref('devices/'+did).set({name,phone,ip,time:new Date().toLocaleString('th-TH')});}
-        afterRegister(name,phone,btn);
+        _0xc5d6e7(name,phone,btn);
       });
     })
     .catch(()=>{
       db.ref('devices/'+did).set({name,phone,ip:'unknown',time:new Date().toLocaleString('th-TH')});
-      afterRegister(name,phone,btn);
+      _0xc5d6e7(name,phone,btn);
     });
 }
-function afterRegister(name,phone,btn){
+function _0xc5d6e7(name,phone,btn){
   currentUser={name,phone};
   document.getElementById('userChip').textContent='👤 '+name;
-  btn.disabled=false;btn.textContent='เข้าร่วมลุ้นรางวัล 🎉';
-  showPage('pageUser');initUserCanvas();drawWheel();updateUserSpinStatus();
+  btn.disabled=false;btn.textContent='ເຂົ້າຮ່ວມລຸ້ນລາງວັນ 🎉';
+  _0xbacbdcb('pageUser');_0xf8a9ba();_0xa9b0c1();_0xa1b2c3e();
 }
 
-function initUserCanvas(){
+function _0xf8a9ba(){
   const c=document.getElementById('userWheel'),ctx=c.getContext('2d');
   const D=Math.min(460,window.innerWidth-32),DPR=window.devicePixelRatio||2;
   c.width=D*DPR;c.height=D*DPR;c.style.width=D+'px';c.style.height=D+'px';ctx.scale(DPR,DPR);
   uCtx=ctx;uW=D;uH=D;uR=D/2-10;
 }
-function preloadImages(){
+function _0xf6a7b8(){
   imageCache=images.map(src=>{if(!src)return null;const img=new Image();img.src=src;return img;});
 }
-function drawWheel(){
+function _0xa9b0c1(){
   if(!uCtx)return;
   const ctx=uCtx,W=uW,H=uH,R=uR,angle=uAngle;
   ctx.clearRect(0,0,W,H);
   const n=names.length;
-  if(n===0){
-    ctx.fillStyle='#1a2e44';ctx.beginPath();ctx.arc(W/2,H/2,R,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#5a88aa';ctx.font='600 14px Kanit,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('รอการตั้งค่าจาก Admin',W/2,H/2);return;
-  }
+  if(n===0){ctx.fillStyle='#1a2e44';ctx.beginPath();ctx.arc(W/2,H/2,R,0,Math.PI*2);ctx.fill();ctx.fillStyle='#5a88aa';ctx.font='600 14px Kanit,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('ລໍຖ້າການຕັ້ງຄ່າຈາກ Admin',W/2,H/2);return;}
   const arc=(2*Math.PI)/n;
   ctx.save();ctx.translate(W/2,H/2);ctx.rotate(angle);
   for(let i=0;i<n;i++){
@@ -307,24 +289,20 @@ function drawWheel(){
   ctx.restore();
 }
 
-function userSpin(){
+function _0xcbdced(){
   if(spinLimitEnabled&&db){
     const key=currentUser.phone||'guest';
     db.ref('spinCounts/'+key).once('value').then(snap=>{
       userSpinCount=snap.val()||0;
-      if(userSpinCount>=spinLimitMax){showSpinLimitMsg();return;}
-      doSpin(idx=>{
-        if(spinLimitEnabled){db.ref('spinCounts/'+key).set(userSpinCount+1);userSpinCount++;updateUserSpinStatus();}
-        showWin(idx);
-      });
+      if(userSpinCount>=spinLimitMax){_0xd4e5f6e();return;}
+      _0xdeeff0(idx=>{if(spinLimitEnabled){db.ref('spinCounts/'+key).set(userSpinCount+1);userSpinCount++;_0xa1b2c3e();}_0xa5b6c7(idx);});
     });
     return;
   }
-  doSpin(idx=>showWin(idx));
+  _0xdeeff0(idx=>_0xa5b6c7(idx));
 }
-function doSpin(onWin){
-  if(uSpinning)return;
-  if(names.length<2)return;
+function _0xdeeff0(onWin){
+  if(uSpinning)return;if(names.length<2)return;
   uSpinning=true;
   const btn=document.getElementById('userSpinBtn');
   btn.disabled=true;btn.textContent='... SPINNING';
@@ -338,23 +316,23 @@ function doSpin(onWin){
   function ease(t){return 1-Math.pow(1-t,4);}
   (function animate(now){
     const t=Math.min((now-t0)/dur,1),a=sa+ease(t)*tr;
-    uAngle=a;drawWheel();
+    uAngle=a;_0xa9b0c1();
     if(t<1){requestAnimationFrame(animate);}
     else{uAngle=(sa+tr)%(2*Math.PI);uSpinning=false;btn.disabled=false;btn.textContent='▶ SPIN THE WHEEL';onWin(wIdx);}
   })(performance.now());
 }
 
-function showWin(idx){
+function _0xa5b6c7(idx){
   currentWinner=names[idx];
   const img=images[idx],color=colors[idx]||'#4a6fa5';
   if(img){document.getElementById('winImg').src=img;document.getElementById('winImgWrap').style.display='block';document.getElementById('winColor').style.display='none';}
   else{document.getElementById('winImgWrap').style.display='none';document.getElementById('winColor').style.display='block';document.getElementById('winColor').style.background=color;}
   document.getElementById('winName').textContent=currentWinner;
   document.getElementById('winModal').classList.add('show');
-  launchConfetti(color);
+  _0xe3f4a5(color);
 }
-function closeWin(){document.getElementById('winModal').classList.remove('show');}
-function openClaim(){
+function _0xd8e9f0(){document.getElementById('winModal').classList.remove('show');}
+function _0xf1a2b3(){
   document.getElementById('winModal').classList.remove('show');
   document.getElementById('claimName').value=currentUser.name;
   document.getElementById('claimPhone').value=currentUser.phone;
@@ -362,8 +340,8 @@ function openClaim(){
   document.getElementById('claimErr').style.display='none';
   document.getElementById('claimModal').classList.add('show');
 }
-function closeClaim(){document.getElementById('claimModal').classList.remove('show');}
-function submitClaim(){
+function _0xc4d5e6(){document.getElementById('claimModal').classList.remove('show');}
+function _0xf7a8b9(){
   const name=document.getElementById('claimName').value.trim();
   const phone=document.getElementById('claimPhone').value.trim();
   const note=document.getElementById('claimNote').value.trim();
@@ -374,33 +352,33 @@ function submitClaim(){
   document.getElementById('claimModal').classList.remove('show');
   document.getElementById('successModal').classList.add('show');
 }
-function closeSuccess(){document.getElementById('successModal').classList.remove('show');}
+function _0xcadeef(){document.getElementById('successModal').classList.remove('show');}
 
-function updateUserSpinStatus(){
+function _0xa1b2c3e(){
   const el=document.getElementById('userSpinStatus');if(!el)return;
   if(!spinLimitEnabled||!db){el.textContent='';return;}
   const key=currentUser.phone||'guest';
   db.ref('spinCounts/'+key).once('value').then(snap=>{
     const used=snap.val()||0,left=spinLimitMax-used;
     if(left<=0){
-      el.innerHTML='<span style="color:#ef5350;">❌ คุณใช้สปินครบแล้ว</span>';
+      el.innerHTML='<span style="color:#ef5350;">❌ ທ່ານໃຊ້ສປິນຄົບແລ້ວ</span>';
       document.getElementById('userSpinBtn').disabled=true;
-      document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
+      document.getElementById('userSpinBtn').textContent='ໝົດສິດສປິນ';
     }else{
-      el.innerHTML='เหลือสปิน <span style="color:#4fc3f7;font-weight:700;">'+left+'/'+spinLimitMax+'</span> ครั้ง';
+      el.innerHTML='ສປິນທີ່ເຫຼືອ: <span style="color:#4fc3f7;font-weight:700;">'+left+'/'+spinLimitMax+'</span>';
       document.getElementById('userSpinBtn').disabled=false;
       document.getElementById('userSpinBtn').textContent='▶ SPIN THE WHEEL';
     }
   });
 }
-function showSpinLimitMsg(){
+function _0xd4e5f6e(){
   const el=document.getElementById('userSpinStatus');
-  if(el)el.innerHTML='<span style="color:#ef5350;font-size:.85rem;">❌ คุณใช้สปินครบแล้ว</span>';
+  if(el)el.innerHTML='<span style="color:#ef5350;font-size:.85rem;">❌ ທ່ານໃຊ້ສປິນຄົບແລ້ວ</span>';
   document.getElementById('userSpinBtn').disabled=true;
-  document.getElementById('userSpinBtn').textContent='หมดสิทธิ์สปิน';
+  document.getElementById('userSpinBtn').textContent='ໝົດສິດສປິນ';
 }
 
-function launchConfetti(mc){
+function _0xe3f4a5(mc){
   const c=document.getElementById('confetti');c.width=window.innerWidth;c.height=window.innerHeight;
   const cx=c.getContext('2d'),cols=[mc,'#4fc3f7','#1565c0','#90caf9','#38bdf8'];
   const ps=Array.from({length:90},()=>({x:Math.random()*c.width,y:-10,w:4+Math.random()*8,h:4+Math.random()*8,col:cols[Math.floor(Math.random()*cols.length)],sp:3+Math.random()*5,spin:(Math.random()-.5)*.14,ang:Math.random()*Math.PI*2,dr:(Math.random()-.5)*1.5}));
@@ -409,10 +387,10 @@ function launchConfetti(mc){
 
 document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('regName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('regPhone').focus();});
-  document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')registerUser();});
-  initUserCanvas();
-  setProgress('เริ่มต้น...');
-  initFirebase();
+  document.getElementById('regPhone').addEventListener('keydown',e=>{if(e.key==='Enter')_0xf2a3b4();});
+  _0xf8a9ba();
+  _0xb6c7d8('ເລີ່ມຕົ້ນ...');
+  _0xa1b2c3();
 });
 </script>
 </body>
