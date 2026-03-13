@@ -142,7 +142,7 @@ body{background:#0d1b2a;color:var(--ink);font-family:'Noto Sans Lao',system-ui,s
         <div class="panel" style="margin-bottom:14px;">
           <div class="panel-title">🎯 ຈຳກັດສປິນ / User <span class="line"></span></div>
           <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:10px;border:1px solid rgba(79,195,247,.08);">
-            <div><div style="font-size:.88rem;font-weight:700;color:var(--ink);">เປິດจำกัดสปิน</div><div style="font-size:.7rem;color:var(--muted);">ປິດ = ไม่จำกัด</div></div>
+            <div><div style="font-size:.88rem;font-weight:700;color:var(--ink);">ເປີດຈຳກັດສປິນ</div><div style="font-size:.7rem;color:var(--muted);">ປິດ = ບໍ່ຈຳກັດ</div></div>
             <label style="position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
               <input type="checkbox" id="unlimitedToggle" checked onchange="_0xb1c2d3()" style="opacity:0;width:0;height:0;">
               <span id="toggleSlider" style="position:absolute;inset:0;background:var(--surface2);border:1px solid rgba(79,195,247,.15);border-radius:24px;transition:all .25s;"></span>
@@ -167,15 +167,15 @@ body{background:#0d1b2a;color:var(--ink);font-family:'Noto Sans Lao',system-ui,s
             </div>
             <button onclick="_0xcddeef()" class="btn btn-red" style="width:100%;font-size:.8rem;padding:9px;">🔄 ລີເຊັດສປິນທຸກຄົນ</button>
           </div>
-          <div id="spinLimitStatus" style="display:none;margin-top:8px;background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.15);border-radius:8px;padding:8px 12px;font-size:.75rem;color:#4fc3f7;text-align:center;">ສປິນສູງສຸດຕໍ່ຄົນ: <span id="limitDisplay" style="font-weight:700;">1</span> / คน</div>
+          <div id="spinLimitStatus" style="display:none;margin-top:8px;background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.15);border-radius:8px;padding:8px 12px;font-size:.75rem;color:#4fc3f7;text-align:center;">ສປິນສູງສຸດຕໍ່ຄົນ: <span id="limitDisplay" style="font-weight:700;">1</span> / ຄົນ</div>
         </div>
         <div class="panel" style="margin-bottom:14px;">
           <div class="panel-title">📱 ເຄື່ອງທີ່ລົງທະບຽນ <span class="line"></span></div>
           <div id="deviceCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
           <div id="deviceList" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;"><div class="empty-state">ກົດ 🔄 ເພື່ອໂຫຼດ</div></div>
           <div style="display:flex;gap:6px;margin-top:10px;">
-            <button class="btn btn-ghost" onclick="_0xa1b2c3d()" style="flex:1;font-size:.76rem;">🔄 รีเฟรช</button>
-            <button class="btn btn-red" onclick="_0xe7f8a9()" style="flex:1;font-size:.76rem;">ລ້າງทั้งหมด</button>
+            <button class="btn btn-ghost" onclick="_0xa1b2c3d()" style="flex:1;font-size:.76rem;">🔄 ລີເຟຣຊ</button>
+            <button class="btn btn-red" onclick="_0xe7f8a9()" style="flex:1;font-size:.76rem;">ລ້າງທັງໝົດ</button>
           </div>
         </div>
         <div class="panel" style="margin-bottom:14px;">
@@ -183,7 +183,7 @@ body{background:#0d1b2a;color:var(--ink);font-family:'Noto Sans Lao',system-ui,s
           <div id="orderCount" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;"></div>
           <div class="orders-list" id="adminOrdersList"><div class="empty-state">ຍັງບໍ່ມີຄຳສັ່ງ</div></div>
           <div style="display:flex;gap:6px;margin-top:10px;">
-            <button class="btn btn-ghost" onclick="_0xbacbdc()" style="flex:1;font-size:.76rem;">🔄 รีเฟรช</button>
+            <button class="btn btn-ghost" onclick="_0xbacbdc()" style="flex:1;font-size:.76rem;">🔄 ລີເຟຣຊ</button>
             <button class="btn btn-red" onclick="_0xedfeaf()" style="flex:1;font-size:.76rem;">ລ້າງ</button>
           </div>
         </div>
@@ -365,7 +365,7 @@ function _0xeafbbc(){
     wrap.innerHTML=stats.map(function(s){const pct=Math.min(100,Math.round((s.used/spinLimitMax)*100)),over=s.used>=spinLimitMax;return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(79,195,247,.06);"><div style="font-size:.72rem;color:var(--ink2);flex:1;">📞 '+_0xb8c9da(s.phone)+'</div><div style="font-size:.7rem;color:'+(over?'#ef5350':'#4fc3f7')+';font-weight:700;">'+s.used+'/'+spinLimitMax+'</div><div style="width:40px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+(over?'#ef5350':'#4fc3f7')+';border-radius:3px;"></div></div></div>';}).join('');
   });
 }
-function _0xcddeef(){if(!db)return;if(!confirm('รีเซ็ตสปินทุกคน?\nทุกคนจะหมุนได้ใหม่'))return;db.ref('spinCounts').remove().then(()=>_0xeafbbc());}
+function _0xcddeef(){if(!db)return;if(!confirm('ລີເຊັດສປິນທຸກຄົນ?\nທຸກຄົນຈະໝູນໄດ້ໃໝ່'))return;db.ref('spinCounts').remove().then(()=>_0xeafbbc());}
 
 function _0xf0a1b2(){const inp=document.getElementById('adminNameInput'),name=inp.value.trim();if(!name)return;names.push(name);colors.push(activePalette[names.length%activePalette.length]||activePalette[0]);images.push(null);imageCache.push(null);weights.push(0);inp.value='';_0xebfcad();_0xa9b0c1();}
 function _0xc3d4e5c(i){names.splice(i,1);colors.splice(i,1);images.splice(i,1);imageCache.splice(i,1);weights.splice(i,1);_0xebfcad();_0xa9b0c1();}
@@ -405,8 +405,8 @@ function _0xa1b2c3d(){
     el.innerHTML=devs.reverse().map(function(entry){var did=entry[0],d=entry[1];return '<div style="background:var(--surface2);border-radius:8px;padding:7px 10px;border:1px solid rgba(79,195,247,.08);"><div style="display:flex;justify-content:space-between;"><span style="font-size:.8rem;color:var(--ink2);font-weight:600;">👤 '+_0xb8c9da(d.name)+'</span><button onclick="_0xd4e5f6d(\''+did+'\')" style="background:none;border:none;color:#ef5350;cursor:pointer;font-size:.72rem;">ບລັອກ</button></div><div style="font-size:.7rem;color:var(--muted);">📞 '+_0xb8c9da(d.phone)+' · '+(d.time||'')+'</div></div>';}).join('');
   });
 }
-function _0xd4e5f6d(did){if(!db||!confirm('ບລັອກเครื่องนี้?'))return;db.ref('devices/'+did).remove().then(()=>_0xa1b2c3d());}
-function _0xe7f8a9(){if(!db||!confirm('ລ້າງข้อมูลเครื่องทั้งหมด?\nทุกคนต้องลงทะเบียนใหม่'))return;db.ref('devices').remove().then(()=>_0xa1b2c3d());}
+function _0xd4e5f6d(did){if(!db||!confirm('ບລັອກເຄື່ອງນີ້?'))return;db.ref('devices/'+did).remove().then(()=>_0xa1b2c3d());}
+function _0xe7f8a9(){if(!db||!confirm('ລ້າງຂໍ້ມູນເຄື່ອງທັງໝົດ?\nທຸກຄົນຕ້ອງລົງທະບຽນໃໝ່'))return;db.ref('devices').remove().then(()=>_0xa1b2c3d());}
 
 function _0xbacbdc(){
   const el=document.getElementById('adminOrdersList'),cnt=document.getElementById('orderCount');if(!el||!db)return;
